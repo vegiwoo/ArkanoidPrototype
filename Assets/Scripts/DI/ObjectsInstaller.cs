@@ -9,7 +9,7 @@ namespace Arkanoid
         [SerializeField] private ShaftComponent shaft;
         [SerializeField] private Transform shaftTransform;
         [SerializeField] private BallComponent ball;
-        [SerializeField] private Transform ballTransform;
+        //[SerializeField] private Transform ballTransform;
         [SerializeField] private BatComponent bat01;
         [SerializeField] private Transform bat01Transform;
         [SerializeField] private BatComponent bat02;
@@ -23,7 +23,7 @@ namespace Arkanoid
             Container.Bind<ShaftComponent>().FromInstance(shaftComponent).AsSingle().NonLazy();
 
             // Ball
-            BallComponent ballComponent = Container.InstantiatePrefabForComponent<BallComponent>(ball.gameObject, ballTransform.position, ballTransform.rotation, null);
+            BallComponent ballComponent = Container.InstantiatePrefabForComponent<BallComponent>(ball.gameObject, ball.gameObject.transform.position, ball.gameObject.transform.rotation, null);
             ballComponent.name = "Ball";
             Container.Bind<BallComponent>().FromInstance(ballComponent).AsSingle().NonLazy();
 

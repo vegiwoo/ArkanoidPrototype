@@ -35,6 +35,14 @@ namespace Arkanoid
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""InitialRoll"",
+                    ""type"": ""Button"",
+                    ""id"": ""f67f8e6b-cd3f-4309-80b9-466a0238e637"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -147,6 +155,17 @@ namespace Arkanoid
                     ""action"": ""Player2Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""95e55f16-8d63-4224-8314-55dd95f2db42"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""InitialRoll"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -157,6 +176,7 @@ namespace Arkanoid
             m_PlayerInput = asset.FindActionMap("PlayerInput", throwIfNotFound: true);
             m_PlayerInput_Player1Movement = m_PlayerInput.FindAction("Player1Movement", throwIfNotFound: true);
             m_PlayerInput_Player2Movement = m_PlayerInput.FindAction("Player2Movement", throwIfNotFound: true);
+            m_PlayerInput_InitialRoll = m_PlayerInput.FindAction("InitialRoll", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -208,12 +228,14 @@ namespace Arkanoid
         private IPlayerInputActions m_PlayerInputActionsCallbackInterface;
         private readonly InputAction m_PlayerInput_Player1Movement;
         private readonly InputAction m_PlayerInput_Player2Movement;
+        private readonly InputAction m_PlayerInput_InitialRoll;
         public struct PlayerInputActions
         {
             private @UserInput m_Wrapper;
             public PlayerInputActions(@UserInput wrapper) { m_Wrapper = wrapper; }
             public InputAction @Player1Movement => m_Wrapper.m_PlayerInput_Player1Movement;
             public InputAction @Player2Movement => m_Wrapper.m_PlayerInput_Player2Movement;
+            public InputAction @InitialRoll => m_Wrapper.m_PlayerInput_InitialRoll;
             public InputActionMap Get() { return m_Wrapper.m_PlayerInput; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -229,6 +251,9 @@ namespace Arkanoid
                     @Player2Movement.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnPlayer2Movement;
                     @Player2Movement.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnPlayer2Movement;
                     @Player2Movement.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnPlayer2Movement;
+                    @InitialRoll.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnInitialRoll;
+                    @InitialRoll.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnInitialRoll;
+                    @InitialRoll.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnInitialRoll;
                 }
                 m_Wrapper.m_PlayerInputActionsCallbackInterface = instance;
                 if (instance != null)
@@ -239,6 +264,9 @@ namespace Arkanoid
                     @Player2Movement.started += instance.OnPlayer2Movement;
                     @Player2Movement.performed += instance.OnPlayer2Movement;
                     @Player2Movement.canceled += instance.OnPlayer2Movement;
+                    @InitialRoll.started += instance.OnInitialRoll;
+                    @InitialRoll.performed += instance.OnInitialRoll;
+                    @InitialRoll.canceled += instance.OnInitialRoll;
                 }
             }
         }
@@ -247,6 +275,7 @@ namespace Arkanoid
         {
             void OnPlayer1Movement(InputAction.CallbackContext context);
             void OnPlayer2Movement(InputAction.CallbackContext context);
+            void OnInitialRoll(InputAction.CallbackContext context);
         }
     }
 }

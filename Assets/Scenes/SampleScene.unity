@@ -164,36 +164,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &617626139
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 617626140}
-  m_Layer: 0
-  m_Name: BallTransform
-  m_TagString: Untagged
-  m_Icon: {fileID: 5132851093641282708, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &617626140
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 617626139}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -5, y: 4, z: 14}
-  m_LocalScale: {x: 0.8, y: 0.8, z: 0.8}
-  m_Children: []
-  m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &757418410
@@ -353,7 +323,6 @@ MonoBehaviour:
   shaft: {fileID: 3624207105557323553, guid: 9e5e6c14b91d041b2adde325eb5c864a, type: 3}
   shaftTransform: {fileID: 1561397986}
   ball: {fileID: 2250577203121267361, guid: ec1ec72ce60834b3d872c60bf1fa9051, type: 3}
-  ballTransform: {fileID: 617626140}
   bat01: {fileID: 2891016802886837281, guid: e5629d0fb43e045a0afbe417eab5740e, type: 3}
   bat01Transform: {fileID: 1847160120}
   bat02: {fileID: 2891016802886837281, guid: e5629d0fb43e045a0afbe417eab5740e, type: 3}

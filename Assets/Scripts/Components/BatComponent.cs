@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 namespace Arkanoid
@@ -7,6 +6,8 @@ namespace Arkanoid
     {
         private Camera batCamera;
         public Rigidbody Rigidbody { get; private set; }
+
+        public Vector3 cameraPosition = Vector3.zero;
 
         private void Awake()
         {
@@ -18,6 +19,12 @@ namespace Arkanoid
             CameraSettings();
         }
 
+        private void Update()
+        {
+            var indent = 0.2f;
+            cameraPosition = new Vector3(transform.position.x + indent, transform.position.y + indent, transform.position.z + indent);
+            batCamera.transform.position = cameraPosition;
+        }
 
         /// <summary>Настраивает дочерний компонент камеры.</summary>
         private void CameraSettings()
@@ -42,6 +49,11 @@ namespace Arkanoid
                     {
                         audioListener.gameObject.SetActive(false);
                     }
+
+                    batCamera.usePhysicalProperties = true;
+                    batCamera.fieldOfView = 80;
+
+                    cameraPosition = batCamera.transform.position;
                 }
             }
         }

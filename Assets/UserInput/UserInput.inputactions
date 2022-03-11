@@ -20,6 +20,14 @@
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": ""
+                },
+                {
+                    "name": "InitialRoll",
+                    "type": "Button",
+                    "id": "f67f8e6b-cd3f-4309-80b9-466a0238e637",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": ""
                 }
             ],
             "bindings": [
@@ -132,6 +140,17 @@
                     "action": "Player2Movement",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "95e55f16-8d63-4224-8314-55dd95f2db42",
+                    "path": "<Keyboard>/space",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "InitialRoll",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

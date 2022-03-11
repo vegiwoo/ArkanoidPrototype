@@ -24,10 +24,14 @@ namespace Arkanoid
 
         /// <summary>Получение ввода от первого игрока.</summary>
         /// <param name="context">Контекст ввода.</param>
-        void OnMovementFirstPalyer(CallbackContext context);
+        void OnMovementFirstPlayer(CallbackContext context);
 
         /// <summary>Получение ввода от второго игрока.</summary>
         /// <param name="context">Контекст ввода.</param>
-        void OnMovementSecondPalyer(CallbackContext context);
+        void OnMovementSecondPlayer(CallbackContext context);
+
+        /// <summary>Начальное отбивание шарика, когда он находится на какой-либо платформе (бите).</summary>
+        /// <param name="context"></param>
+        void OnInitialRoll(CallbackContext context);
     }
 }

@@ -1,7 +1,27 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Zenject;
+
+/*
+ * 
+ * Мяч - есть все компоненты физического тела, коллайдер, но заморожено перемещение и вращение
+ * В начале игры мяч у первого игрока, запуск по пробелу 
+ * Мяч не должен перемещаться и отражаться по физике (векторная математика)
+    Ворота за игроками
+    Мяч возвращается пропустившему игроку, у понижается общий счет жизней (счет общий)
+    Мяч отражается от платформ, стен, блоков (блок удалятся)
+    После удара по блоку мяч ускоряется (есть мнимальная и максималная скорость)
+    - при упускании шарика скорость возвращается к минимальной
+    Блоки в центре тоннеля, генерация, смещение (random rotation)
+    Конец игры - оба игрока пропустят по N шариков или выбиты все блоки
+    Все настройки перенести в редактор
+    Комментарии
+
+
+    Найти метод, реализующий отражение без физики
+ */ 
 
 namespace Arkanoid
 {
@@ -17,6 +37,8 @@ namespace Arkanoid
         private IInputable Inputs { get; set; }
 
         private BatSettings BatSettings { get; set; }
+
+        private Coroutine ballMovingCoroutine;
 
         #endregion
 
@@ -38,6 +60,9 @@ namespace Arkanoid
             BatSettings = batSettings;
 
             Subscribe();
+
+            Ball.transform.position = Bat01.cameraPosition;
+
             print($"Dependency injection for GameManager was successful.");
         }
 
@@ -73,15 +98,87 @@ namespace Arkanoid
         /// <param name="batDirection">Движение биты конкретного игрока.</param>
         private void SomePlayersInputHandler(object _, BatDirection batDirection)
         {
-            switch (batDirection.Side)
+            if (!batDirection.IsInitialRoll)
             {
-                case SideOfConflict.First:
-                    Bat01.Rigidbody.AddForce(batDirection.Movement * BatSettings.batSpeed * Time.fixedDeltaTime, ForceMode.Impulse); 
-                    break;
-                case SideOfConflict.Second:
-                    Bat02.Rigidbody.AddForce(batDirection.Movement * BatSettings.batSpeed * Time.fixedDeltaTime, ForceMode.Impulse);
-                    break;
+                switch (batDirection.Side)
+                {
+                    case SideOfConflict.First:
+                        Bat01.Rigidbody.AddForce(batDirection.Movement * BatSettings.batSpeed * Time.fixedDeltaTime, ForceMode.Impulse);
+                        break;
+                    case SideOfConflict.Second:
+                        Bat02.Rigidbody.AddForce(batDirection.Movement * BatSettings.batSpeed * Time.fixedDeltaTime, ForceMode.Impulse);
+                        break;
+                }
             }
+            else
+            {
+                switch (batDirection.Side)
+                {
+                    case SideOfConflict.First:
+                        Ball.transform.position = Bat01.cameraPosition;
+                        break;
+                    case SideOfConflict.Second:
+                        Ball.transform.position = Bat02.cameraPosition;
+                        break;
+                }
+
+                ballMovingCoroutine = StartCoroutine(BallMovingCoroutine());
+            }
+        }
+
+
+
+        private IEnumerator BallMovingCoroutine()
+        {
+            // Придеть укорение мячику вперед 
+
+
+
+
+
+            // Получать Reflected Object через RayCast
+
+
+
+            //float maxDistance = 10;
+
+
+
+            //Vector3 direction = 3 * Ball.transform.forward;
+            //Vector3 multiplicationScalar = 5 * a; 
+
+            while (true)
+            {
+                var direction = Ball.transform.forward * 2;
+
+                Ball.transform.Translate(Ball.transform.forward * Time.deltaTime);
+                Debug.DrawLine(Ball.transform.position, direction, Color.red, 2);
+
+                //Ball.transform.Translate(Ball.transform.forward * Time.deltaTime);
+                //direction = 5 * Ball.transform.position;
+
+
+                //Vector3 forward = Ball.transform.TransformDirection(Vector3.forward);
+
+                //if (Physics.Raycast(Ball.transform.position, forward, maxDistance))
+                //{
+                //    // Впереди перед объектом что-то есть
+                //}
+
+
+
+
+                //Ball.transform.Translate(Ball.transform.forward * Ball.currentBallSpeed * Time.deltaTime);
+                yield return null;
+            }
+
+
+           
+
+
+            //Ball.transform.position = Vector3.Lerp(Ball.transform.position, ballDirection, 1);
+
+           
         }
     }
 }

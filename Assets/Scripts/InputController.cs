@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace Arkanoid
@@ -24,59 +25,67 @@ namespace Arkanoid
         public void Subscribe()
         {
             Inputs.Enable();
-            Inputs.PlayerInput.Player1Movement.started += OnMovementFirstPalyer;
-            Inputs.PlayerInput.Player1Movement.performed += OnMovementFirstPalyer;
-            Inputs.PlayerInput.Player1Movement.canceled += OnMovementFirstPalyer;
+            Inputs.PlayerInput.Player1Movement.started += OnMovementFirstPlayer;
+            Inputs.PlayerInput.Player1Movement.performed += OnMovementFirstPlayer;
+            Inputs.PlayerInput.Player1Movement.canceled += OnMovementFirstPlayer;
 
-            Inputs.PlayerInput.Player2Movement.started += OnMovementSecondPalyer;
-            Inputs.PlayerInput.Player2Movement.performed += OnMovementSecondPalyer;
-            Inputs.PlayerInput.Player2Movement.canceled += OnMovementSecondPalyer;
+            Inputs.PlayerInput.Player2Movement.started += OnMovementSecondPlayer;
+            Inputs.PlayerInput.Player2Movement.performed += OnMovementSecondPlayer;
+            Inputs.PlayerInput.Player2Movement.canceled += OnMovementSecondPlayer;
+
+            Inputs.PlayerInput.InitialRoll.performed += OnInitialRoll;
         }
 
         public void Unsubscribing()
         {
-            Inputs.PlayerInput.Player1Movement.started -= OnMovementFirstPalyer;
-            Inputs.PlayerInput.Player1Movement.performed -= OnMovementFirstPalyer;
-            Inputs.PlayerInput.Player1Movement.canceled -= OnMovementFirstPalyer;
+            Inputs.PlayerInput.Player1Movement.started -= OnMovementFirstPlayer;
+            Inputs.PlayerInput.Player1Movement.performed -= OnMovementFirstPlayer;
+            Inputs.PlayerInput.Player1Movement.canceled -= OnMovementFirstPlayer;
 
-            Inputs.PlayerInput.Player2Movement.started -= OnMovementSecondPalyer;
-            Inputs.PlayerInput.Player2Movement.performed -= OnMovementSecondPalyer;
-            Inputs.PlayerInput.Player2Movement.canceled -= OnMovementSecondPalyer;
+            Inputs.PlayerInput.Player2Movement.started -= OnMovementSecondPlayer;
+            Inputs.PlayerInput.Player2Movement.performed -= OnMovementSecondPlayer;
+            Inputs.PlayerInput.Player2Movement.canceled -= OnMovementSecondPlayer;
+
+            Inputs.PlayerInput.InitialRoll.performed -= OnInitialRoll;
 
             Inputs.Disable();
             Inputs.Dispose();
         }
 
-        public void OnMovementFirstPalyer(CallbackContext context)
+        public void OnMovementFirstPlayer(CallbackContext context)
         {
-            if (context.performed)
-            {
-                UnityEngine.Vector2 destination = context.ReadValue<UnityEngine.Vector2>();
-                GetBitDirectionEvent(SideOfConflict.First, destination);
-            }
-            else
-            {
-                GetBitDirectionEvent(SideOfConflict.First, UnityEngine.Vector2.zero);
-            }
+            UnityEngine.Vector2 destination = context.performed
+                ? context.ReadValue<UnityEngine.Vector2>()
+                : UnityEngine.Vector2.zero;
+
+            GetBitDirectionEvent(SideOfConflict.First, destination, false);
         }
 
-        public void OnMovementSecondPalyer(CallbackContext context)
+        public void OnMovementSecondPlayer(CallbackContext context)
         {
-           if (context.performed)
-            {
-                UnityEngine.Vector2 destination = context.ReadValue<UnityEngine.Vector2>();
-                GetBitDirectionEvent(SideOfConflict.Second, destination);
-            }
-            else
-            {
-                GetBitDirectionEvent(SideOfConflict.Second, UnityEngine.Vector2.zero);
-            }
+            UnityEngine.Vector2 destination = context.performed
+                ? context.ReadValue<UnityEngine.Vector2>()
+                : UnityEngine.Vector2.zero;
+
+            GetBitDirectionEvent(SideOfConflict.Second, destination, false);
         }
 
-        private void GetBitDirectionEvent(SideOfConflict side, UnityEngine.Vector2 destination)
+        public void OnInitialRoll(CallbackContext context)
         {
-            BatDirection bitDirection = new BatDirection(side, destination);
-            BatDirectionEvent?.Invoke(this, bitDirection);
+            GetBitDirectionEvent(SideOfConflict.Second, UnityEngine.Vector2.zero, true);
+        }
+
+        /// <summary>Формирует и публикует событие.</summary>
+        /// <param name="side">Сторона конфликта.</param>
+        /// <param name="destination">Направление движения биты.</param>
+        /// <param name="isInitailRoll">Сделан ли первый удар по шару.</param>
+        private void GetBitDirectionEvent(SideOfConflict side, UnityEngine.Vector2 destination, bool isInitailRoll)
+        {
+            BatDirection batDirection = isInitailRoll
+                ? new BatDirection(side, isInitailRoll)
+                : new BatDirection(side, destination);
+
+            BatDirectionEvent?.Invoke(this, batDirection);
         }
     }
 }

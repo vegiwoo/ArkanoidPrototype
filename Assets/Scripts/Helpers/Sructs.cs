@@ -17,9 +17,20 @@ namespace Arkanoid
         /// <summary> Направление движения биты игрока.</summary>
         public Vector2 Movement { get; private set; }
 
+        public bool IsInitialRoll { get; private set; }
+
         public BatDirection(SideOfConflict side, Vector2 movement)
         {
-            Side = side; Movement = movement;
+            Side = side;
+            Movement = movement;
+            IsInitialRoll = false;
+        }
+
+        public BatDirection(SideOfConflict side, bool isInitialRoll)
+        {
+            Side = side;
+            Movement = Vector2.zero;
+            IsInitialRoll = isInitialRoll;
         }
     }
 }
