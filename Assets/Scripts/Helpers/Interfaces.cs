@@ -20,7 +20,7 @@ namespace Arkanoid
         UserInput Inputs { get; set; }
 
         /// <summary>Обработчик события изменения направления движения биты определенного игрока.</summary>
-        event EventHandler<BatDirection> BitDirectionEvent;
+        event EventHandler<BatDirection> BatDirectionEvent;
 
         /// <summary>Получение ввода от первого игрока.</summary>
         /// <param name="context">Контекст ввода.</param>

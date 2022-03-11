@@ -13,7 +13,7 @@ namespace Arkanoid
             Container.Bind<IInputable>().To<InputController>().AsSingle().NonLazy();
 
             // BatSettings
-            batSettings.batSpeed = 15.0f;
+            batSettings.batSpeed = 50.0f;
             Container.Bind<BatSettings>().FromInstance(batSettings).AsSingle().NonLazy();
 
             // GameManager

@@ -8,7 +8,7 @@ namespace Arkanoid
     {
         public UserInput Inputs { get; set; }
 
-        public event EventHandler<BatDirection> BitDirectionEvent;
+        public event EventHandler<BatDirection> BatDirectionEvent;
 
         public InputController()
         {
@@ -62,7 +62,7 @@ namespace Arkanoid
 
         public void OnMovementSecondPalyer(CallbackContext context)
         {
-            if (context.performed)
+           if (context.performed)
             {
                 UnityEngine.Vector2 destination = context.ReadValue<UnityEngine.Vector2>();
                 GetBitDirectionEvent(SideOfConflict.Second, destination);
@@ -76,7 +76,7 @@ namespace Arkanoid
         private void GetBitDirectionEvent(SideOfConflict side, UnityEngine.Vector2 destination)
         {
             BatDirection bitDirection = new BatDirection(side, destination);
-            BitDirectionEvent?.Invoke(this, bitDirection);
+            BatDirectionEvent?.Invoke(this, bitDirection);
         }
     }
 }

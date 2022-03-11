@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 namespace Arkanoid
@@ -6,25 +7,17 @@ namespace Arkanoid
     {
         private Camera batCamera;
         public Rigidbody Rigidbody { get; private set; }
-        public Vector2 Movement { get; set; }
+
+        private void Awake()
+        {
+            Rigidbody = GetComponent<Rigidbody>();
+        }
 
         private void Start()
         {
-            Movement = Vector2.zero;
-
             CameraSettings();
-            Rigidbody = this.GetComponent<Rigidbody>();
-
-            if (Rigidbody != null)
-            {
-                Rigidbody.freezeRotation = true;
-                Rigidbody.isKinematic = true;
-            }
-            else
-            {
-                Debug.LogError("Rigidbody in BatComponent is null!");
-            }
         }
+
 
         /// <summary>Настраивает дочерний компонент камеры.</summary>
         private void CameraSettings()

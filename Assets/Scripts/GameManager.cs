@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -35,22 +34,16 @@ namespace Arkanoid
             Bat02 = bats.Where(ba => ba.name == "Bat02").FirstOrDefault();
 
             Inputs = inputs;
-            Subscribe();
 
             BatSettings = batSettings;
+
+            Subscribe();
+            print($"Dependency injection for GameManager was successful.");
         }
 
         #endregion
 
         #region MonoBehaviour methods
-
-        private void FixedUpdate()
-        {
-            if (Bat01.Movement != Vector2.zero)
-                Bat01.Rigidbody.AddForce(Bat01.Movement * BatSettings.batSpeed, ForceMode.Acceleration);
-            if (Bat02.Movement != Vector2.zero)
-                Bat02.Rigidbody.AddForce(Bat02.Movement * BatSettings.batSpeed, ForceMode.Acceleration);
-        } 
 
         private void OnDisable()
         {
@@ -62,14 +55,14 @@ namespace Arkanoid
 
         public void Subscribe()
         {
-            Inputs.BitDirectionEvent += SomePlayersInputHandler;
+            Inputs.BatDirectionEvent += SomePlayersInputHandler;
         }
 
         public void Unsubscribing()
         {
             if (Inputs != null)
             {
-                Inputs.BitDirectionEvent -= SomePlayersInputHandler;
+                Inputs.BatDirectionEvent -= SomePlayersInputHandler;
             }
         }
 
@@ -83,10 +76,10 @@ namespace Arkanoid
             switch (batDirection.Side)
             {
                 case SideOfConflict.First:
-                    Bat01.Movement = batDirection.Movement;
+                    Bat01.Rigidbody.AddForce(batDirection.Movement * BatSettings.batSpeed * Time.fixedDeltaTime, ForceMode.Impulse); 
                     break;
                 case SideOfConflict.Second:
-                    Bat02.Movement = batDirection.Movement;
+                    Bat02.Rigidbody.AddForce(batDirection.Movement * BatSettings.batSpeed * Time.fixedDeltaTime, ForceMode.Impulse);
                     break;
             }
         }
