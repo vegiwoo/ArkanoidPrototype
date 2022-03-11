@@ -7,8 +7,6 @@ namespace Arkanoid
         private Camera batCamera;
         public Rigidbody Rigidbody { get; private set; }
 
-        public Vector3 cameraPosition = Vector3.zero;
-
         private void Awake()
         {
             Rigidbody = GetComponent<Rigidbody>();
@@ -17,13 +15,6 @@ namespace Arkanoid
         private void Start()
         {
             CameraSettings();
-        }
-
-        private void Update()
-        {
-            var indent = 0.2f;
-            cameraPosition = new Vector3(transform.position.x + indent, transform.position.y + indent, transform.position.z + indent);
-            batCamera.transform.position = cameraPosition;
         }
 
         /// <summary>Настраивает дочерний компонент камеры.</summary>
@@ -52,10 +43,27 @@ namespace Arkanoid
 
                     batCamera.usePhysicalProperties = true;
                     batCamera.fieldOfView = 80;
-
-                    cameraPosition = batCamera.transform.position;
                 }
             }
+        }
+
+        /// <summary>Определяет является ли переданный объект дочерним относительно текущего.</summary>
+        /// <param name="intendedChild"></param>
+        /// <returns></returns>
+        public bool CheckIsObjectChild(Transform intendedChild)
+        {
+            return intendedChild.IsChildOf(transform);
+        }
+
+        /// <summary>Назначает или удаляет текущий компонент в качестве родителя для переданного.</summary>
+        /// <param name="isAssignParent">Флаг назначания.</param>
+        /// <param name="child">Дочерний компонент.</param>
+        public void SetComponentAsParent(bool isAssignParent, Transform child)
+        {
+            Transform targret = gameObject.transform;
+
+            child.transform.parent = isAssignParent ? targret : null;
+            child.transform.position = new Vector3(targret.position.x, targret.position.y, targret.position.z + 1.2f);
         }
     }
 }

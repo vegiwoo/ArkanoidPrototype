@@ -61,9 +61,9 @@ namespace Arkanoid
 
             Subscribe();
 
-            Ball.transform.position = Bat01.cameraPosition;
+            Bat01.SetComponentAsParent(true, Ball.transform);
 
-            print($"Dependency injection for GameManager was successful.");
+            print($"DI for GameManager was successful.");
         }
 
         #endregion
@@ -115,10 +115,10 @@ namespace Arkanoid
                 switch (batDirection.Side)
                 {
                     case SideOfConflict.First:
-                        Ball.transform.position = Bat01.cameraPosition;
+                        //Ball.transform.position = Bat01.cameraPosition;
                         break;
                     case SideOfConflict.Second:
-                        Ball.transform.position = Bat02.cameraPosition;
+                        //Ball.transform.position = Bat02.cameraPosition;
                         break;
                 }
 
@@ -126,14 +126,21 @@ namespace Arkanoid
             }
         }
 
-
-
         private IEnumerator BallMovingCoroutine()
         {
+            if (Bat01.CheckIsObjectChild(Ball.transform))
+            {
+                Bat01.SetComponentAsParent(false, Ball.transform);
+            }
+
+            if (Bat02.CheckIsObjectChild(Ball.transform))
+            {
+                Bat02.SetComponentAsParent(false, Ball.transform);
+            }
+
+
+
             // Придеть укорение мячику вперед 
-
-
-
 
 
             // Получать Reflected Object через RayCast
