@@ -1,16 +1,15 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Arkanoid
 {
     /// <summary>Компонент биты (платформы) игрока.</summary>
-    public class BatComponent : MonoBehaviour
+    public class BatComponent : MonoBehaviour, ISideble
     {
         /// <summary>Камера как дочерний объект биты.</summary>
         private Camera batCamera;
         /// <summary>Твердое тело биты.</summary>
         public Rigidbody Rigidbody { get; private set; }
+        public SideOfConflict Side { get; set; }
 
         private void Awake()
         {
@@ -65,10 +64,25 @@ namespace Arkanoid
         /// <param name="child">Дочерний компонент.</param>
         public void SetComponentAsParent(bool isAssignParent, Transform child)
         {
-            Transform targret = transform;
+            if (isAssignParent)
+            {
+                child.transform.position = transform.position;
+                child.transform.parent = transform;
 
-            child.transform.parent = isAssignParent ? targret : null;
-            child.transform.position = new Vector3(targret.position.x, targret.position.y, targret.position.z + 1.5f);
+                switch (Side)
+                {
+                    case SideOfConflict.First:
+                        child.transform.Translate(0.0f, 0.0f, 1.5f);
+                        break;
+                    case SideOfConflict.Second:
+                        child.transform.Translate(0.0f, 0.0f, 1.5f);
+                        break;
+                }
+            }
+            else
+            {
+                child.transform.parent = null;
+            }
         }
     }
 }

@@ -1,18 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
-public class GoalComponent : MonoBehaviour
+namespace Arkanoid
 {
-    // Start is called before the first frame update
-    void Start()
+    public class GoalComponent : MonoBehaviour, ISideble
     {
-        
-    }
+        public SideOfConflict Side { get; set; }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public event EventHandler<SideOfConflict> BallInGoalEvent;
+
+        private void OnTriggerEnter(Collider other)
+        {
+            if (other.gameObject.name.Contains("Ball"))
+                BallInGoalEvent?.Invoke(this, Side);
+        }
     }
 }

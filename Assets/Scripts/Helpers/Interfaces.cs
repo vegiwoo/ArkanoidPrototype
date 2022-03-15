@@ -34,4 +34,10 @@ namespace Arkanoid
         /// <param name="context"></param>
         void OnInitialRoll(CallbackContext context);
     }
+
+    /// <summary>Требует определения стороны конфликта.</summary>
+    public interface ISideble
+    {
+        SideOfConflict Side { get; set; }
+    }
 }

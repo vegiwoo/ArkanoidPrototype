@@ -11,9 +11,9 @@ namespace Arkanoid
     }
 
     /// <summary>Движение биты игрока.</summary>
-    public struct BatDirection
+    public struct BatDirection : ISideble
     {
-        public SideOfConflict Side { get; private set; }
+        public SideOfConflict Side { get; set; }
         /// <summary> Направление движения биты игрока.</summary>
         public Vector2 Movement { get; private set; }
 

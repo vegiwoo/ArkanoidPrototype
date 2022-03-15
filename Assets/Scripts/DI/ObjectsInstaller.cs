@@ -34,21 +34,25 @@ namespace Arkanoid
             // Bat01
             BatComponent bat01Component = Container.InstantiatePrefabForComponent<BatComponent>(bat01.gameObject, bat01Transform.transform.position, bat01Transform.rotation, null);
             bat01Component.name = "Bat01";
+            bat01Component.Side = SideOfConflict.First;
             Container.Bind<BatComponent>().FromInstance(bat01Component).NonLazy();
 
             // Bat02
             BatComponent bat02Component = Container.InstantiatePrefabForComponent<BatComponent>(bat02.gameObject, bat02Transform.position, bat02Transform.rotation, null);
             bat02Component.name = "Bat02";
+            bat01Component.Side = SideOfConflict.Second;
             Container.Bind<BatComponent>().FromInstance(bat02Component).NonLazy();
 
             // Goal01
             GoalComponent goal01Component = Container.InstantiatePrefabForComponent<GoalComponent>(goal01.gameObject, goal01Transform.transform.position, goal01Transform.rotation, null);
             goal01Component.name = "Goal01";
+            goal01Component.Side = SideOfConflict.First;
             Container.Bind<GoalComponent>().FromInstance(goal01Component).NonLazy();
 
             // Goal02
             GoalComponent goal02Component = Container.InstantiatePrefabForComponent<GoalComponent>(goal02.gameObject, goal02Transform.transform.position, goal02Transform.rotation, null);
             goal02Component.name = "Goal02";
+            goal02Component.Side = SideOfConflict.Second;
             Container.Bind<GoalComponent>().FromInstance(goal02Component).NonLazy();
         }
     }

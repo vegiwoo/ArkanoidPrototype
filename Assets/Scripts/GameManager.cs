@@ -6,7 +6,6 @@ using Zenject;
 
 /*
  *
-    Ворота за игроками
     Мяч возвращается пропустившему игроку, у понижается общий счет жизней (счет общий)
     Мяч отражается от платформ, стен, блоков (блок удалятся)
     После удара по блоку мяч ускоряется (есть мнимальная и максималная скорость)
@@ -41,6 +40,10 @@ namespace Arkanoid
 
         private Coroutine ballMovingCoroutine;
 
+        private bool isGoalScored = false;
+
+        private int hp = 10;
+
         #endregion
 
         #region Dependency Injection
@@ -56,8 +59,8 @@ namespace Arkanoid
             Bat01 = bats.Where(ba => ba.name == "Bat01").FirstOrDefault();
             Bat02 = bats.Where(ba => ba.name == "Bat02").FirstOrDefault();
 
-            Goal01 = goals.Where(ba => ba.name == "Goal01").FirstOrDefault();
-            Goal01 = goals.Where(ba => ba.name == "Goal02").FirstOrDefault();
+            Goal01 = goals.Where(go => go.name == "Goal01").FirstOrDefault();
+            Goal02 = goals.Where(go => go.name == "Goal02").FirstOrDefault();
 
             Inputs = inputs;
 
@@ -66,23 +69,12 @@ namespace Arkanoid
             Subscribe();
 
             Bat01.SetComponentAsParent(true, Ball.transform);
-        }
 
+            Debug.Log("Начало новой игры\nВыбей все блоки и не потеряй все жизни, чтобы выиграть!");
+            Debug.Log($"Текущее количество жизней: {hp}.");
+        }
 
         #endregion
-
-        private void RemovingBallFromBat()
-        {
-            if (Bat01.CheckIsObjectChild(Ball.gameObject.transform))
-            {
-                Bat01.SetComponentAsParent(false, Ball.transform);
-            }
-
-            if (Bat02.CheckIsObjectChild(Ball.gameObject.transform))
-            {
-                Bat02.SetComponentAsParent(false, Ball.transform);
-            }
-        }
 
         #region MonoBehaviour methods
 
@@ -92,25 +84,10 @@ namespace Arkanoid
         }
         #endregion
 
-        #region Other methods
-
-        public void Subscribe()
-        {
-            Inputs.BatDirectionEvent += SomePlayersInputHandler;
-        }
-
-        public void Unsubscribing()
-        {
-            if (Inputs != null)
-            {
-                Inputs.BatDirectionEvent -= SomePlayersInputHandler;
-            }
-        }
-
-        #endregion
+        #region Event handlers
 
         /// <summary>Обрабатывает ввод от какого-то игрока.</summary>
-        /// <param name="_">Издатель события;</param>
+        /// <param name="_">Издатель события.</param>
         /// <param name="batDirection">Движение биты конкретного игрока.</param>
         private void SomePlayersInputHandler(object _, BatDirection batDirection)
         {
@@ -128,19 +105,89 @@ namespace Arkanoid
             }
             else
             {
-                Ball.Direction = Ball.transform.transform.forward;
+                isGoalScored = false;
+
+                if (Bat01.CheckIsObjectChild(Ball.transform))
+                {
+                    Bat01.SetComponentAsParent(false, Ball.transform);
+                    Ball.Direction = Ball.transform.transform.forward;
+                }
+                else if (Bat02.CheckIsObjectChild(Ball.transform))
+                {
+                    Bat02.SetComponentAsParent(false, Ball.transform);
+                    Ball.Direction = -Ball.transform.transform.forward;
+                }
+
                 ballMovingCoroutine = StartCoroutine(BallMovingCoroutine());
             }
         }
 
+        /// <summary>Обрабатывает событие гола.</summary>
+        /// <param name="_">Издатель события.</param>
+        /// <param name="side">Сторона, которой забили гол.</param>
+        private void BallInGoalEventHandler(object _, SideOfConflict side)
+        {
+            isGoalScored = true;
+            hp -= 1;
+
+            Debug.Log($"Текущее количество жизней: {hp}.");
+
+            if (hp == 0)
+            {
+                UnityEditor.EditorApplication.isPaused = true;
+                Debug.Log($"Game over.");
+
+            }
+            else
+            {
+                switch (side)
+                {
+                    case SideOfConflict.First:
+                        Bat01.SetComponentAsParent(true, Ball.transform);
+                        break;
+                    case SideOfConflict.Second:
+                        Bat02.SetComponentAsParent(true, Ball.transform);
+                        break;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Coroutines
 
         private IEnumerator BallMovingCoroutine()
         {
-            while (true)
+            while (!isGoalScored)
             {
                 Ball.transform.Translate(Ball.Direction * Ball.currentBallSpeed * Time.deltaTime);
                 yield return null;
             }
+            ballMovingCoroutine = null;
+            yield break;
         }
+
+        #endregion
+
+        #region Other methods
+
+        public void Subscribe()
+        {
+            Inputs.BatDirectionEvent += SomePlayersInputHandler;
+            Goal01.BallInGoalEvent += BallInGoalEventHandler;
+            Goal02.BallInGoalEvent += BallInGoalEventHandler;
+        }
+
+        public void Unsubscribing()
+        {
+            if (Inputs != null)
+            {
+                Inputs.BatDirectionEvent -= SomePlayersInputHandler;
+                Goal01.BallInGoalEvent -= BallInGoalEventHandler;
+                Goal02.BallInGoalEvent -= BallInGoalEventHandler;
+            }
+        }
+
+        #endregion
     }
 }
