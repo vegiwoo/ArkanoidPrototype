@@ -5,9 +5,6 @@ using UnityEngine;
 using Zenject;
 
 /*
- * 
- * Мяч - есть все компоненты физического тела, коллайдер, но заморожено перемещение и вращение
- * В начале игры мяч у первого игрока, запуск по пробелу 
  * Мяч не должен перемещаться и отражаться по физике (векторная математика)
     Ворота за игроками
     Мяч возвращается пропустившему игроку, у понижается общий счет жизней (счет общий)
@@ -40,6 +37,8 @@ namespace Arkanoid
 
         private Coroutine ballMovingCoroutine;
 
+        private ContactWithObject? BallContact;
+
         #endregion
 
         #region Dependency Injection
@@ -62,11 +61,34 @@ namespace Arkanoid
             Subscribe();
 
             Bat01.SetComponentAsParent(true, Ball.transform);
+        }
 
-            print($"DI for GameManager was successful.");
+        private void BallContactEventHandler(object sender, List<ContactWithObject> contactList)
+        {
+            foreach (ContactWithObject contact in contactList)
+            {
+                if (contact.ContactTargetName == Ball.name)
+                {
+                    print("Boom!");
+                    //ballMovingCoroutine = StartCoroutine(BallMovingCoroutine());
+                }
+            }
         }
 
         #endregion
+
+        private void RemovingBallFromBat()
+        {
+            if (Bat01.CheckIsObjectChild(Ball.gameObject.transform))
+            {
+                Bat01.SetComponentAsParent(false, Ball.transform);
+            }
+
+            if (Bat02.CheckIsObjectChild(Ball.gameObject.transform))
+            {
+                Bat02.SetComponentAsParent(false, Ball.transform);
+            }
+        }
 
         #region MonoBehaviour methods
 
@@ -81,6 +103,7 @@ namespace Arkanoid
         public void Subscribe()
         {
             Inputs.BatDirectionEvent += SomePlayersInputHandler;
+            Ball.BallContactEvent += BallContactEventHandler;
         }
 
         public void Unsubscribing()
@@ -88,6 +111,11 @@ namespace Arkanoid
             if (Inputs != null)
             {
                 Inputs.BatDirectionEvent -= SomePlayersInputHandler;
+            }
+
+            if (Ball != null)
+            {
+                Ball.BallContactEvent -= BallContactEventHandler;
             }
         }
 
@@ -112,80 +140,23 @@ namespace Arkanoid
             }
             else
             {
-                switch (batDirection.Side)
-                {
-                    case SideOfConflict.First:
-                        //Ball.transform.position = Bat01.cameraPosition;
-                        break;
-                    case SideOfConflict.Second:
-                        //Ball.transform.position = Bat02.cameraPosition;
-                        break;
-                }
+                Ball.direction = Ball.transform.forward;
+
+
 
                 ballMovingCoroutine = StartCoroutine(BallMovingCoroutine());
             }
         }
 
+
         private IEnumerator BallMovingCoroutine()
         {
-            if (Bat01.CheckIsObjectChild(Ball.transform))
-            {
-                Bat01.SetComponentAsParent(false, Ball.transform);
-            }
-
-            if (Bat02.CheckIsObjectChild(Ball.transform))
-            {
-                Bat02.SetComponentAsParent(false, Ball.transform);
-            }
-
-
-
-            // Придеть укорение мячику вперед 
-
-
-            // Получать Reflected Object через RayCast
-
-
-
-            //float maxDistance = 10;
-
-
-
-            //Vector3 direction = 3 * Ball.transform.forward;
-            //Vector3 multiplicationScalar = 5 * a; 
-
             while (true)
             {
-                var direction = Ball.transform.forward * 2;
+                Ball.transform.Translate(Ball.direction * Ball.currentBallSpeed * Time.deltaTime);
 
-                Ball.transform.Translate(Ball.transform.forward * Time.deltaTime);
-                Debug.DrawLine(Ball.transform.position, direction, Color.red, 2);
-
-                //Ball.transform.Translate(Ball.transform.forward * Time.deltaTime);
-                //direction = 5 * Ball.transform.position;
-
-
-                //Vector3 forward = Ball.transform.TransformDirection(Vector3.forward);
-
-                //if (Physics.Raycast(Ball.transform.position, forward, maxDistance))
-                //{
-                //    // Впереди перед объектом что-то есть
-                //}
-
-
-
-
-                //Ball.transform.Translate(Ball.transform.forward * Ball.currentBallSpeed * Time.deltaTime);
                 yield return null;
             }
-
-
-           
-
-
-            //Ball.transform.position = Vector3.Lerp(Ball.transform.position, ballDirection, 1);
-
-           
         }
     }
 }

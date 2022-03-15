@@ -33,4 +33,27 @@ namespace Arkanoid
             IsInitialRoll = isInitialRoll;
         }
     }
+
+    /// <summary>Сущность контакта двух объектов.</summary>
+    public struct ContactWithObject
+    {
+        /// <summary>Имя источника контакта (кто контактирует).</summary>
+        public string ContactSourceName { get; set; }
+        /// <summary>Имя цели контакта (с кем контактирует).</summary>
+        public string ContactTargetName { get; set; }
+        /// <summary>Точка контакта.</summary>
+        public Vector3 ContactPoint { get; set; }
+        /// <summary>Нормаль контакта.</summary>
+        public Vector3 ContactNormal { get; set; }
+
+        public override bool Equals(object obj)
+        {
+            return base.Equals(obj) && ((ContactWithObject)obj).ContactPoint == ContactPoint ;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+    }
 }
