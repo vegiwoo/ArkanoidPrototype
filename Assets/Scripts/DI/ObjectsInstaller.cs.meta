@@ -3,7 +3,16 @@ guid: 8e8925db26de54e1785bcd92a23ae592
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - shaft: {fileID: 3624207105557323553, guid: 9e5e6c14b91d041b2adde325eb5c864a, type: 3}
+  - shaftTransform: {instanceID: 0}
+  - ball: {fileID: 2250577203121267361, guid: ec1ec72ce60834b3d872c60bf1fa9051, type: 3}
+  - bat01: {instanceID: 0}
+  - bat01Transform: {instanceID: 0}
+  - bat02: {instanceID: 0}
+  - bat02Transform: {instanceID: 0}
+  - goal01Transform: {instanceID: 0}
+  - goal02Transform: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

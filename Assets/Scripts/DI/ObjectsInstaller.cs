@@ -9,11 +9,15 @@ namespace Arkanoid
         [SerializeField] private ShaftComponent shaft;
         [SerializeField] private Transform shaftTransform;
         [SerializeField] private BallComponent ball;
-        //[SerializeField] private Transform ballTransform;
         [SerializeField] private BatComponent bat01;
         [SerializeField] private Transform bat01Transform;
         [SerializeField] private BatComponent bat02;
         [SerializeField] private Transform bat02Transform;
+
+        [SerializeField] private GoalComponent goal01;
+        [SerializeField] private Transform goal01Transform;
+        [SerializeField] private GoalComponent goal02;
+        [SerializeField] private Transform goal02Transform;
 
         public override void InstallBindings()
         {
@@ -36,6 +40,16 @@ namespace Arkanoid
             BatComponent bat02Component = Container.InstantiatePrefabForComponent<BatComponent>(bat02.gameObject, bat02Transform.position, bat02Transform.rotation, null);
             bat02Component.name = "Bat02";
             Container.Bind<BatComponent>().FromInstance(bat02Component).NonLazy();
+
+            // Goal01
+            GoalComponent goal01Component = Container.InstantiatePrefabForComponent<GoalComponent>(goal01.gameObject, goal01Transform.transform.position, goal01Transform.rotation, null);
+            goal01Component.name = "Goal01";
+            Container.Bind<GoalComponent>().FromInstance(goal01Component).NonLazy();
+
+            // Goal02
+            GoalComponent goal02Component = Container.InstantiatePrefabForComponent<GoalComponent>(goal02.gameObject, goal02Transform.transform.position, goal02Transform.rotation, null);
+            goal02Component.name = "Goal02";
+            Container.Bind<GoalComponent>().FromInstance(goal02Component).NonLazy();
         }
     }
 }

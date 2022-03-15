@@ -8615,6 +8615,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   currentBallSpeed: 0
+  Direction: {x: 0, y: 0, z: 0}
 --- !u!54 &8575696987408871997
 Rigidbody:
   m_ObjectHideFlags: 0

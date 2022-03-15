@@ -1,5 +1,3 @@
-using System;
-using System.Collections.Generic;
 using UnityEngine;
 
 namespace Arkanoid
@@ -11,10 +9,7 @@ namespace Arkanoid
 
         public float currentBallSpeed = default;
 
-        public Vector3 direction;
-
-        /// <summary>Событие столкновения шара с другими объектами.</summary>
-        public event EventHandler<List<ContactWithObject>> BallContactEvent;
+        public Vector3 Direction;
 
         private void Start()
         {
@@ -23,13 +18,7 @@ namespace Arkanoid
 
         private void OnCollisionEnter(Collision collision)
         {
-            //if (collision.gameObject.name.Contains("Bat"))
-            //{
-
-
-                direction = -direction;
-
-           // }
+            Direction = Vector3.Reflect(Direction.normalized, collision.contacts[0].normal);
         }
     }
 }
