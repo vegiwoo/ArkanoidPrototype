@@ -137,7 +137,7 @@ namespace Arkanoid
                 {
                     ""name"": ""left"",
                     ""id"": ""e774cf04-648b-445f-aa0c-73df9dffd250"",
-                    ""path"": ""<Keyboard>/leftArrow"",
+                    ""path"": ""<Keyboard>/rightArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",
@@ -148,7 +148,7 @@ namespace Arkanoid
                 {
                     ""name"": ""right"",
                     ""id"": ""26bbf537-932d-4c16-a459-ad96e4b51f77"",
-                    ""path"": ""<Keyboard>/rightArrow"",
+                    ""path"": ""<Keyboard>/leftArrow"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": """",

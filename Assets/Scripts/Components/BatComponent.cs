@@ -64,6 +64,8 @@ namespace Arkanoid
         /// <param name="child">Дочерний компонент.</param>
         public void SetComponentAsParent(bool isAssignParent, Transform child)
         {
+            child.transform.parent = null;
+
             if (isAssignParent)
             {
                 child.transform.position = transform.position;
@@ -72,16 +74,15 @@ namespace Arkanoid
                 switch (Side)
                 {
                     case SideOfConflict.First:
-                        child.transform.Translate(0.0f, 0.0f, 1.5f);
+                        child.transform.Rotate(new Vector3(-90, 0, 0));
+                        child.transform.Translate(0.0f, 3.0f, 0.0f);
                         break;
                     case SideOfConflict.Second:
                         child.transform.Translate(0.0f, 0.0f, 1.5f);
                         break;
                 }
-            }
-            else
-            {
-                child.transform.parent = null;
+
+               
             }
         }
     }

@@ -4,21 +4,6 @@ using System.Linq;
 using UnityEngine;
 using Zenject;
 
-/*
- *
-    Мяч возвращается пропустившему игроку, у понижается общий счет жизней (счет общий)
-    Мяч отражается от платформ, стен, блоков (блок удалятся)
-    После удара по блоку мяч ускоряется (есть мнимальная и максималная скорость)
-    - при упускании шарика скорость возвращается к минимальной
-    Блоки в центре тоннеля, генерация, смещение (random rotation)
-    Конец игры - оба игрока пропустят по N шариков или выбиты все блоки
-    Все настройки перенести в редактор
-    Комментарии
-
-
-    Найти метод, реализующий отражение без физики
- */ 
-
 namespace Arkanoid
 {
     public class GameManager : MonoBehaviour, ISubscribing
@@ -43,6 +28,13 @@ namespace Arkanoid
         private bool isGoalScored = false;
 
         private int hp = 10;
+
+        private static float blockSize = 0.8f;
+        private float blockRotateStep = 45.0f;
+        private float distanceBetweenBlocks = blockSize + blockSize / 4;
+        List<GameObject> blocks = new List<GameObject>(19);
+
+        private int brokenBlockCounter = 0;
 
         #endregion
 
@@ -72,6 +64,8 @@ namespace Arkanoid
 
             Debug.Log("Начало новой игры\nВыбей все блоки и не потеряй все жизни, чтобы выиграть!");
             Debug.Log($"Текущее количество жизней: {hp}.");
+
+            CreateBlocks();
         }
 
         #endregion
@@ -135,11 +129,13 @@ namespace Arkanoid
             if (hp == 0)
             {
                 UnityEditor.EditorApplication.isPaused = true;
-                Debug.Log($"Game over.");
+                Debug.Log($"Game over. Вы проигирали :(");
 
             }
             else
             {
+                Ball.SetBallSpeed(ChangeBallSpeed.Initial);
+
                 switch (side)
                 {
                     case SideOfConflict.First:
@@ -148,6 +144,35 @@ namespace Arkanoid
                     case SideOfConflict.Second:
                         Bat02.SetComponentAsParent(true, Ball.transform);
                         break;
+                }
+            }
+        }
+
+        private void BlockKnockEventHandler(object sender,  (GameObject go, Vector3 normal) item)
+        {
+            Ball.Direction = Vector3.Reflect(Ball.Direction.normalized, item.normal);
+
+            if (item.go.name.Contains("Block"))
+            {
+                GameObject removed = blocks.Where(bl => bl.name == item.go.name).FirstOrDefault();
+
+                if(removed != null)
+                {
+                    blocks.Remove(removed);
+                    Destroy(removed);
+
+                    brokenBlockCounter += 1;
+
+                    if (blocks.Count() == 0)
+                    {
+                        UnityEditor.EditorApplication.isPaused = true;
+                        Debug.Log($"Game over. Вы победили :)");
+                    }
+                    else
+                    {
+                        Ball.SetBallSpeed(ChangeBallSpeed.Up);
+                        Debug.Log($"Счет: {brokenBlockCounter}, осталось блоков: {blocks.Count}");
+                    }
                 }
             }
         }
@@ -176,6 +201,7 @@ namespace Arkanoid
             Inputs.BatDirectionEvent += SomePlayersInputHandler;
             Goal01.BallInGoalEvent += BallInGoalEventHandler;
             Goal02.BallInGoalEvent += BallInGoalEventHandler;
+            Ball.BlockKnockEvent += BlockKnockEventHandler;
         }
 
         public void Unsubscribing()
@@ -185,6 +211,52 @@ namespace Arkanoid
                 Inputs.BatDirectionEvent -= SomePlayersInputHandler;
                 Goal01.BallInGoalEvent -= BallInGoalEventHandler;
                 Goal02.BallInGoalEvent -= BallInGoalEventHandler;
+                Ball.BlockKnockEvent -= BlockKnockEventHandler;
+            }
+        }
+
+        private void CreateBlocks()
+        {
+            Vector3 center = Shaft.transform.position;
+
+            List<Vector3> blocksPositions = new List<Vector3>(19)
+            {
+                center,
+                new Vector3(center.x + distanceBetweenBlocks, center.y, center.z),
+                new Vector3(center.x - distanceBetweenBlocks, center.y, center.z),
+                new Vector3(center.x, center.y + distanceBetweenBlocks, center.z),
+                new Vector3(center.x, center.y - distanceBetweenBlocks, center.z),
+                new Vector3(center.x, center.y, center.z + distanceBetweenBlocks),
+                new Vector3(center.x, center.y, center.z - distanceBetweenBlocks),
+
+                new Vector3(center.x + distanceBetweenBlocks, center.y + distanceBetweenBlocks, center.z),
+                new Vector3(center.x + distanceBetweenBlocks, center.y - distanceBetweenBlocks, center.z),
+                new Vector3(center.x - distanceBetweenBlocks, center.y + distanceBetweenBlocks, center.z),
+                new Vector3(center.x - distanceBetweenBlocks, center.y - distanceBetweenBlocks, center.z),
+
+                new Vector3(center.x + distanceBetweenBlocks, center.y + distanceBetweenBlocks, center.z + distanceBetweenBlocks),
+                new Vector3(center.x + distanceBetweenBlocks, center.y + distanceBetweenBlocks, center.z - distanceBetweenBlocks),
+                new Vector3(center.x + distanceBetweenBlocks, center.y - distanceBetweenBlocks, center.z + distanceBetweenBlocks),
+                new Vector3(center.x + distanceBetweenBlocks, center.y - distanceBetweenBlocks, center.z - distanceBetweenBlocks),
+                new Vector3(center.x - distanceBetweenBlocks, center.y + distanceBetweenBlocks, center.z + distanceBetweenBlocks),
+                new Vector3(center.x - distanceBetweenBlocks, center.y + distanceBetweenBlocks, center.z - distanceBetweenBlocks),
+                new Vector3(center.x - distanceBetweenBlocks, center.y - distanceBetweenBlocks, center.z + distanceBetweenBlocks),
+                new Vector3(center.x - distanceBetweenBlocks, center.y - distanceBetweenBlocks, center.z - distanceBetweenBlocks),
+            };
+
+            for (int i = 0; i < blocksPositions.Count; i++)
+            {
+                GameObject gameObject = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                gameObject.transform.localScale = new Vector3(blockSize, blockSize, blockSize);
+                gameObject.transform.position = blocksPositions[i];
+                gameObject.transform.Rotate(Random.Range(-blockRotateStep, blockRotateStep), Random.Range(-blockRotateStep, blockRotateStep), Random.Range(-blockRotateStep, blockRotateStep));
+                gameObject.name = $"Block{i}";
+
+                Rigidbody rigidbody = gameObject.AddComponent<Rigidbody>();
+                rigidbody.useGravity = false;
+                rigidbody.isKinematic = true;
+
+                blocks.Add(gameObject);
             }
         }
 
