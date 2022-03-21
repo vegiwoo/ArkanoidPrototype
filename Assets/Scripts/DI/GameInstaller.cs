@@ -10,7 +10,7 @@ namespace Arkanoid
 
         public override void InstallBindings()
         {
-            Container.Bind<IInputable>().To<InputController>().AsSingle().NonLazy();
+            // Container.Bind<IInputable>().To<InputController>().AsSingle().NonLazy();
 
             // BatSettings
             batSettings.batSpeed = 50.0f;
