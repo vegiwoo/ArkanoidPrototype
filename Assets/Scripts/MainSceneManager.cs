@@ -5,19 +5,24 @@ namespace Arkanoid
 {
     public class MainSceneManager : MonoBehaviour
     {
-        private IGameServiceble Game { get; set; }
-        private ISettingServiceble Settings { get; set; }
-        private ISceneble SceneController { get; set; }
+        private IGameServiceble GameService { get; set; }
+        private ISettingServiceble SettingsService { get; set; }
+        private ISceneble SceneService { get; set; }
         private Canvas MainSceneCanvas { get; set; }
         private MainMenuController MainMenu { get; set; }
         private GameSettingsContoller GameSettingsMenu { get; set; }
 
         [Inject]
-        public void Construct(IGameServiceble game, ISettingServiceble setting, ISceneble sceneController, Canvas canvas, MainMenuController mainMenu, GameSettingsContoller gameSettingsContoller)
+        public void ConstrustServices(IGameServiceble gameService, ISceneble sceneService, ISettingServiceble settingService)
         {
-            Game = game;
-            Settings = setting;
-            SceneController = sceneController;
+            GameService = gameService;
+            SceneService = sceneService;
+            SettingsService = settingService;
+        }
+
+        [Inject]
+        public void ConstructObjects(Canvas canvas, MainMenuController mainMenu, GameSettingsContoller gameSettingsContoller)
+        {
             MainSceneCanvas = canvas;
             MainMenu = mainMenu;
             GameSettingsMenu = gameSettingsContoller;
@@ -62,23 +67,24 @@ namespace Arkanoid
             {
                 case MainMenuCommand.NewGame:
                     Debug.Log("Начать новую игру");
+                    SceneService.LoadScene(Scene.GameScene);
                     break;
                 case MainMenuCommand.Settings:
                     Debug.Log("Переход в меню настроек");
                     MainMenu.gameObject.SetActive(false);
                     // Получить актуальные настройки и отдать на меню 
                     GameSettingsMenu.gameObject.SetActive(true);
-                    GameSettingsMenu.UpdateSettings(Settings.GetGameSettings());
+                    GameSettingsMenu.UpdateSettings(SettingsService.GetGameSettings());
                     break;
                 case MainMenuCommand.Exit:
-                    Game.ExitGame();
+                    GameService.ExitGame();
                     break;
             }
         }
 
         private void OnSettingsMenuBackButtonClickHandler(object _, GameSettings currentSettings)
         {
-            Settings.SetGameSettings(currentSettings);
+            SettingsService.SetGameSettings(currentSettings);
 
             GameSettingsMenu.gameObject.SetActive(false);
             MainMenu.gameObject.SetActive(true);
