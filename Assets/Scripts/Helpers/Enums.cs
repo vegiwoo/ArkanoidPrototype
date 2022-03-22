@@ -1,10 +1,10 @@
 namespace Arkanoid
 {
+    /// <summary>Команды кнопок MainMenu</summary>
+    public enum MainMenuCommand { NewGame, Settings, Exit };
+
     /// <summary>Режим сложности игры.</summary>
-    public enum DifficultyGameMode
-    {
-        Easy, Medium, Hard
-    }
+    public enum DifficultyGameMode { Easy, Medium, Hard }
 
     /// <summary>Сторона конфликта.</summary>
     public enum SideOfConflict { First = 1, Second = 2 }

@@ -1,39 +1,44 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MainMenuController : MonoBehaviour
+namespace Arkanoid
 {
-    [SerializeField] private Button newGameButton;
-    [SerializeField] private Button settingsButton;
-    [SerializeField] private Button exitButton;
-
-
-    private void OnEnable()
+    public class MainMenuController : MonoBehaviour
     {
-        newGameButton.onClick.AddListener(OnClickNewGameButtonHandler);
-        settingsButton.onClick.AddListener(OnClickSettingsButtonHandler);
-        exitButton.onClick.AddListener(OnClickExitButtonHandler);
-    }
+        [SerializeField] private Button newGameButton;
+        [SerializeField] private Button settingsButton;
+        [SerializeField] private Button exitButton;
 
-    private void OnDisable()
-    {
-        newGameButton.onClick.RemoveListener(OnClickNewGameButtonHandler);
-        settingsButton.onClick.RemoveListener(OnClickSettingsButtonHandler);
-        exitButton.onClick.RemoveListener(OnClickExitButtonHandler);
-    }
+        public event EventHandler<MainMenuCommand> mainMenuEvent;
 
-    private void OnClickNewGameButtonHandler()
-    {
-        print("newGameButton click");
-    }
+        private void OnEnable()
+        {
+            newGameButton.onClick.AddListener(OnClickNewGameButtonHandler);
+            settingsButton.onClick.AddListener(OnClickSettingsButtonHandler);
+            exitButton.onClick.AddListener(OnClickExitButtonHandler);
+        }
 
-    private void OnClickSettingsButtonHandler()
-    {
-        print("settingsButton click");
-    }
+        private void OnDisable()
+        {
+            newGameButton.onClick.RemoveListener(OnClickNewGameButtonHandler);
+            settingsButton.onClick.RemoveListener(OnClickSettingsButtonHandler);
+            exitButton.onClick.RemoveListener(OnClickExitButtonHandler);
+        }
 
-    private void OnClickExitButtonHandler()
-    {
-        print("exitButton click");
+        private void OnClickNewGameButtonHandler()
+        {
+            mainMenuEvent?.Invoke(this, MainMenuCommand.NewGame);
+        }
+
+        private void OnClickSettingsButtonHandler()
+        {
+            mainMenuEvent?.Invoke(this, MainMenuCommand.Settings);
+        }
+
+        private void OnClickExitButtonHandler()
+        {
+            mainMenuEvent?.Invoke(this, MainMenuCommand.Exit);
+        }
     }
 }

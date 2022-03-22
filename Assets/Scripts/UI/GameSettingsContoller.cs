@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -10,51 +11,81 @@ namespace Arkanoid
         [SerializeField] private GameObject difficultyToggles;
         private ToggleGroup difficultyToggleGroup;
 
-        private DifficultyGameMode gameMode = DifficultyGameMode.Easy;
-        private bool isMuteSound = false;
+        [SerializeField] private Button backButton;
 
-        private const int SOUND_VOLUME_LEVEL_DEFAULT = 50; 
-        private int soundVolumeLevel = SOUND_VOLUME_LEVEL_DEFAULT;
+        public GameSettings currentGameSettings;
+
+        public event EventHandler<GameSettings> gameSettingsEvent;
+        public event EventHandler<GameSettings> backEvent;
 
         private void Awake()
         {
+            currentGameSettings = new GameSettings(DifficultyGameMode.Easy, false, 10);
             difficultyToggleGroup = difficultyToggles.GetComponent<ToggleGroup>();
+        }
+
+        private void OnEnable()
+        {
+            soundEnableToggle.onValueChanged.AddListener(OnSoundEnableToggleHandler);
+            backButton.onClick.AddListener(OnBackButtonClickHandler);
+        }
+
+        private void OnDisable()
+        {
+            soundEnableToggle.onValueChanged.RemoveListener(OnSoundEnableToggleHandler);
+            backButton.onClick.RemoveListener(OnBackButtonClickHandler);
+        }
+
+        public void UpdateSettings(GameSettings settings)
+        {
+            currentGameSettings = settings;
         }
 
         private void Start()
         {
-            soundEnableToggle.isOn = isMuteSound;
-            soundEnableToggle.onValueChanged.AddListener(OnSoundEnableToggleHandler);
+            OnSoundEnableToggleHandler(false);
+
+            soundEnableToggle.isOn = currentGameSettings.IsMuteSound;
+           
 
             soundVolumeSlider.enabled = true;
-            soundVolumeSlider.value = soundVolumeLevel;
+            soundVolumeSlider.value = currentGameSettings.CurrentSoundVolumeLevel;
             soundVolumeSlider.onValueChanged.AddListener(OnSoundVolumeSliderHandler);
 
-            gameMode = DifficultyGameMode.Easy;
+            print("GameSettingsContoller Start");
         }
 
         private void OnSoundEnableToggleHandler(bool value)
         {
-            isMuteSound = value;
+            currentGameSettings.IsMuteSound = value;
 
-            if (isMuteSound)
+            if (currentGameSettings.IsMuteSound)
             {
                 OnSoundVolumeSliderHandler(0);
                 soundVolumeSlider.enabled = false;
             }
             else
             {
-                OnSoundVolumeSliderHandler(SOUND_VOLUME_LEVEL_DEFAULT);
+                OnSoundVolumeSliderHandler(currentGameSettings.CurrentSoundVolumeLevel);
                 soundVolumeSlider.enabled = true;
             }
         }
 
         private void OnSoundVolumeSliderHandler(float value)
         {
-            soundVolumeLevel = (int)value;
+            currentGameSettings.CurrentSoundVolumeLevel = (int)value;
 
-            if (soundVolumeSlider.value != soundVolumeLevel)
-                soundVolumeSlider.value = soundVolumeLevel;
+            if (soundVolumeSlider.value != currentGameSettings.CurrentSoundVolumeLevel)
+                soundVolumeSlider.value = currentGameSettings.CurrentSoundVolumeLevel;
+
+            gameSettingsEvent?.Invoke(this, currentGameSettings);
+        }
+
+        // TODO: Обработка по режиму сложности.
+
+        private void OnBackButtonClickHandler()
+        {
+            backEvent?.Invoke(this, currentGameSettings);
         }
     }
 }

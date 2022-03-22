@@ -3,6 +3,18 @@ using static UnityEngine.InputSystem.InputAction;
 
 namespace Arkanoid
 {
+    /// <summary>Настройки игры.</summary>
+    public interface ISettingServicable
+    {
+        /// <summary>Возвращает текущние настройки игры.</summary>
+        /// <returns>Текущие настройки.</returns>
+        GameSettings GetGameSettings();
+
+        /// <summary>Устанавливает настройки игры.</summary>
+        /// <param name="settings">Переданные настройки.</param>
+        void SetGameSettings(GameSettings settings);
+    }
+
     /// <summary>Подписка и отписка от интересующих событий.</summary>
     public interface ISubscribing
     {

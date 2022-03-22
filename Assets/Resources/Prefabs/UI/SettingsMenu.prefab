@@ -1986,6 +1986,17 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 51dbea06fe58249fea4290e3a8627ef3, type: 3}
+--- !u!114 &3113177671537440486 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 969986597279336320, guid: 51dbea06fe58249fea4290e3a8627ef3, type: 3}
+  m_PrefabInstance: {fileID: 2756817817273839974}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e29b1a8efbd4b44bb3f3716e73f07ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &3113177672324970847 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 969986596420470841, guid: 51dbea06fe58249fea4290e3a8627ef3, type: 3}
@@ -2011,3 +2022,4 @@ MonoBehaviour:
   soundEnableToggle: {fileID: 7390286523520723023}
   soundVolumeSlider: {fileID: 1943449170941445689}
   difficultyToggles: {fileID: 7446252595413116203}
+  backButton: {fileID: 3113177671537440486}

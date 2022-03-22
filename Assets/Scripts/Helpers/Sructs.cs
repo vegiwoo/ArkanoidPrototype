@@ -3,6 +3,23 @@ using UnityEngine;
 
 namespace Arkanoid
 {
+    /// <summary>Настройки игры.</summary>
+    public struct GameSettings
+    {
+        public DifficultyGameMode GameMode { get; set; }
+        /// <summary>Включен или выключен звук в игре.</summary>
+        public bool IsMuteSound { get; set; }
+        /// <summary>Текущая громкость звука. </summary>
+        public int CurrentSoundVolumeLevel { get; set; }
+
+        public GameSettings(DifficultyGameMode gameMode, bool isMuteSound, int volume)
+        {
+            GameMode = gameMode;
+            IsMuteSound = isMuteSound;
+            CurrentSoundVolumeLevel = volume;
+        }
+    }
+
     [Serializable]
     public struct BatSettings
     {
