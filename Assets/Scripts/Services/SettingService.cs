@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Arkanoid
 {
     /// <summary>Сервис для работы с настройками игры.</summary>
-    public class SettingService : ISettingServicable
+    public class SettingService : ISettingServiceble
     {
         #region Variables and constants
 

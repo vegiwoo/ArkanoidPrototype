@@ -3,8 +3,15 @@ using static UnityEngine.InputSystem.InputAction;
 
 namespace Arkanoid
 {
+    /// <summary>Глобальный сервис игры.</summary>
+    public interface IGameServiceble
+    {
+        /// <summary>Выход из игры.</summary>
+        public void ExitGame();
+    }
+
     /// <summary>Настройки игры.</summary>
-    public interface ISettingServicable
+    public interface ISettingServiceble
     {
         /// <summary>Возвращает текущние настройки игры.</summary>
         /// <returns>Текущие настройки.</returns>
@@ -26,7 +33,7 @@ namespace Arkanoid
     }
 
     /// <summary>Получение ввода от игрока.</summary>
-    public interface IInputServicable : ISubscribing
+    public interface IInputServiceble : ISubscribing
     {
         /// <summary>Класс реалиазции пользовательского ввода.</summary>
         UserInput Inputs { get; set; }

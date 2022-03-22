@@ -4,7 +4,7 @@ using static UnityEngine.InputSystem.InputAction;
 namespace Arkanoid
 {
     /// <summary>Получает ввод от пользователя.</summary>
-    public class InputService : IInputServicable
+    public class InputService : IInputServiceble
     {
         public UserInput Inputs { get; set; }
 

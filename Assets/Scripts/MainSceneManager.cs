@@ -5,15 +5,17 @@ namespace Arkanoid
 {
     public class MainSceneManager : MonoBehaviour
     {
-        private ISettingServicable Settings { get; set; }
+        private IGameServiceble Game { get; set; }
+        private ISettingServiceble Settings { get; set; }
         private ISceneble SceneController { get; set; }
         private Canvas MainSceneCanvas { get; set; }
         private MainMenuController MainMenu { get; set; }
         private GameSettingsContoller GameSettingsMenu { get; set; }
 
         [Inject]
-        public void Construct(ISettingServicable setting, ISceneble sceneController, Canvas canvas, MainMenuController mainMenu, GameSettingsContoller gameSettingsContoller)
+        public void Construct(IGameServiceble game, ISettingServiceble setting, ISceneble sceneController, Canvas canvas, MainMenuController mainMenu, GameSettingsContoller gameSettingsContoller)
         {
+            Game = game;
             Settings = setting;
             SceneController = sceneController;
             MainSceneCanvas = canvas;
@@ -59,19 +61,17 @@ namespace Arkanoid
             switch (menuCommand)
             {
                 case MainMenuCommand.NewGame:
-                    print("Начать новую игру");
+                    Debug.Log("Начать новую игру");
                     break;
                 case MainMenuCommand.Settings:
-                    print("Перейти в меню настроек");
+                    Debug.Log("Переход в меню настроек");
                     MainMenu.gameObject.SetActive(false);
-
-                    // Получить актуальные настроки и отдать на меню 
+                    // Получить актуальные настройки и отдать на меню 
                     GameSettingsMenu.gameObject.SetActive(true);
                     GameSettingsMenu.UpdateSettings(Settings.GetGameSettings());
-
                     break;
                 case MainMenuCommand.Exit:
-                    print("Выйти из игры");
+                    Game.ExitGame();
                     break;
             }
         }
