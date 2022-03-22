@@ -7,11 +7,11 @@ namespace Arkanoid
     {
         public override void InstallBindings()
         {
-            // Game service
-            Container.Bind<IGameServiceble>().To<GameService>().AsSingle().NonLazy();
-
             // Game settings service
             Container.Bind<ISettingServiceble>().To<SettingService>().AsSingle().NonLazy();
+
+            // Game service
+            Container.Bind<IGameServiceble>().To<GameService>().AsSingle().NonLazy();
 
             // InputController
             Container.Bind<IInputServiceble>().To<InputService>().AsSingle().NonLazy();

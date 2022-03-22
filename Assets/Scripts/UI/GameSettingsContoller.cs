@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -6,53 +8,77 @@ namespace Arkanoid
 {
     public class GameSettingsContoller : MonoBehaviour
     {
+        #region Variables and constants
+        
         [SerializeField] private Toggle soundEnableToggle;
         [SerializeField] private Slider soundVolumeSlider;
-        [SerializeField] private GameObject difficultyToggles;
-        private ToggleGroup difficultyToggleGroup;
-
+        [SerializeField] private ToggleGroup difficultyToggles;
+        private List<Toggle> difficultyTogglesList = new List<Toggle>(3);
         [SerializeField] private Button backButton;
 
         public GameSettings currentGameSettings;
-
-        public event EventHandler<GameSettings> gameSettingsEvent;
         public event EventHandler<GameSettings> backEvent;
+
+        #endregion
+
+        #region MonoBehaviour Methods
 
         private void Awake()
         {
             currentGameSettings = new GameSettings(DifficultyGameMode.Easy, false, 10);
-            difficultyToggleGroup = difficultyToggles.GetComponent<ToggleGroup>();
+            difficultyTogglesList = difficultyToggles.GetComponentsInChildren<Toggle>().ToList();
+        }
+
+        private void Start()
+        {
+            //OnSoundEnableToggleHandler(false);
+
+            //soundEnableToggle.isOn = currentGameSettings.IsMuteSound;
+
+            //soundVolumeSlider.enabled = true;
+            //soundVolumeSlider.value = currentGameSettings.CurrentSoundVolumeLevel;
         }
 
         private void OnEnable()
         {
             soundEnableToggle.onValueChanged.AddListener(OnSoundEnableToggleHandler);
+            soundVolumeSlider.onValueChanged.AddListener(OnSoundVolumeSliderHandler);
+
+            foreach (var toggle in difficultyTogglesList)
+            {
+                toggle.onValueChanged.AddListener(OnDifficultyTogglesHandler);
+            }
+
             backButton.onClick.AddListener(OnBackButtonClickHandler);
         }
 
         private void OnDisable()
         {
             soundEnableToggle.onValueChanged.RemoveListener(OnSoundEnableToggleHandler);
+            soundVolumeSlider.onValueChanged.RemoveListener(OnSoundVolumeSliderHandler);
+
+            foreach (var toggle in difficultyTogglesList)
+            {
+                toggle.onValueChanged.RemoveListener(OnDifficultyTogglesHandler);
+            }
+
             backButton.onClick.RemoveListener(OnBackButtonClickHandler);
         }
+
+        #endregion
+
+        #region Methods
 
         public void UpdateSettings(GameSettings settings)
         {
             currentGameSettings = settings;
-        }
 
-        private void Start()
-        {
-            OnSoundEnableToggleHandler(false);
-
-            soundEnableToggle.isOn = currentGameSettings.IsMuteSound;
-           
-
-            soundVolumeSlider.enabled = true;
+            soundEnableToggle.isOn = soundVolumeSlider.enabled  = currentGameSettings.IsMuteSound;
             soundVolumeSlider.value = currentGameSettings.CurrentSoundVolumeLevel;
-            soundVolumeSlider.onValueChanged.AddListener(OnSoundVolumeSliderHandler);
 
-            print("GameSettingsContoller Start");
+            int gameModeIndex = (int)currentGameSettings.GameMode;
+            List<Toggle> toggles = difficultyToggles.GetComponentsInChildren<Toggle>().ToList();
+            toggles[gameModeIndex].isOn = true;
         }
 
         private void OnSoundEnableToggleHandler(bool value)
@@ -77,15 +103,21 @@ namespace Arkanoid
 
             if (soundVolumeSlider.value != currentGameSettings.CurrentSoundVolumeLevel)
                 soundVolumeSlider.value = currentGameSettings.CurrentSoundVolumeLevel;
-
-            gameSettingsEvent?.Invoke(this, currentGameSettings);
         }
 
-        // TODO: Обработка по режиму сложности.
+        private void OnDifficultyTogglesHandler(bool _)
+        {
+            Toggle activeToggle = difficultyToggles.ActiveToggles().FirstOrDefault();
+            int activeToggleIndex = difficultyTogglesList.IndexOf(activeToggle);
+
+            DifficultyGameMode selectGameMode = (DifficultyGameMode)activeToggleIndex;
+            currentGameSettings.GameMode = selectGameMode;
+        }
 
         private void OnBackButtonClickHandler()
         {
             backEvent?.Invoke(this, currentGameSettings);
         }
+        #endregion
     }
 }

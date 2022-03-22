@@ -38,21 +38,22 @@ namespace Arkanoid
         public void SetGameSettings(GameSettings settings)
         {
             currentGameSettings = settings;
-            SaveGamesettingsInStorage();
+            SaveGameSettingsInStorage();
         }
 
         /// <summary>Сохраняет параметры игры в хранилище данных.</summary>
-        private void SaveGamesettingsInStorage()
+        private void SaveGameSettingsInStorage()
         {
             int difficultyValue = (int)currentGameSettings.GameMode;
+
             int isMuteSoundValue = Convert.ToInt32(currentGameSettings.IsMuteSound);
             int currentSoundVolumeLevelValue = currentGameSettings.CurrentSoundVolumeLevel;
-
-            Debug.Log($" SetValues: difficulty - {difficultyValue},  mute - {isMuteSoundValue}, level -  {currentSoundVolumeLevelValue}");
 
             PlayerPrefs.SetInt(difficultyKey, difficultyValue);
             PlayerPrefs.SetInt(isMuteSoundKey, isMuteSoundValue);
             PlayerPrefs.SetInt(currentSoundVolumeLevelKey, currentSoundVolumeLevelValue);
+
+            SaveStorage();
         }
 
         /// <summary>Получает параметры игры из хранилища данных создает новые.</summary>
@@ -82,6 +83,11 @@ namespace Arkanoid
             }
 
             return gameSettings;
+        }
+
+        public void SaveStorage()
+        {
+            PlayerPrefs.Save();
         }
 
         #endregion

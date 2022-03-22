@@ -1,5 +1,11 @@
 namespace Arkanoid
 {
+    /// <summary>Имена всех сцен в проекте.</summary>
+    public enum Scene
+    {
+        MainScene, GameScene
+    }
+
     /// <summary>Ключи для сохранени параметров</summary>
     public enum KeyForSavingParams
     {

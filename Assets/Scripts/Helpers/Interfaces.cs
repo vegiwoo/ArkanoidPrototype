@@ -10,7 +10,15 @@ namespace Arkanoid
         public void ExitGame();
     }
 
-    /// <summary>Настройки игры.</summary>
+    /// <summary>Сервис рабты со сценами.</summary>
+    public interface ISceneble
+    {
+        /// <summary>Загружает сцену по имени.</summary>
+        /// <param name="scene">Имя сцены.</param>
+        void LoadScene(Scene scene);
+    }
+
+    /// <summary>Сервис для работы с настройками игры.</summary>
     public interface ISettingServiceble
     {
         /// <summary>Возвращает текущние настройки игры.</summary>
@@ -20,6 +28,9 @@ namespace Arkanoid
         /// <summary>Устанавливает настройки игры.</summary>
         /// <param name="settings">Переданные настройки.</param>
         void SetGameSettings(GameSettings settings);
+
+        /// <summary>Сохраняет хранилище.</summary>
+        void SaveStorage();
     }
 
     /// <summary>Подписка и отписка от интересующих событий.</summary>

@@ -32,13 +32,13 @@ namespace Arkanoid
         private void OnEnable()
         {
             MainMenu.mainMenuEvent += OnMainMenuButtonClickHandler;
-            GameSettingsMenu.backEvent += OnSettingsMentBackButtonClickHandler;
+            GameSettingsMenu.backEvent += OnSettingsMenuBackButtonClickHandler;
         }
 
         private void OnDisable()
         {
             MainMenu.mainMenuEvent -= OnMainMenuButtonClickHandler;
-            GameSettingsMenu.backEvent -= OnSettingsMentBackButtonClickHandler;
+            GameSettingsMenu.backEvent -= OnSettingsMenuBackButtonClickHandler;
         }
 
         /// <summary>Настраивает RectTransform меню относительно родителя и активирует/деактивирует меню.</summary>
@@ -76,7 +76,7 @@ namespace Arkanoid
             }
         }
 
-        private void OnSettingsMentBackButtonClickHandler(object _, GameSettings currentSettings)
+        private void OnSettingsMenuBackButtonClickHandler(object _, GameSettings currentSettings)
         {
             Settings.SetGameSettings(currentSettings);
 
