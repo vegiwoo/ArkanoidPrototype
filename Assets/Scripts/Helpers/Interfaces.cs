@@ -26,7 +26,7 @@ namespace Arkanoid
     }
 
     /// <summary>Получение ввода от игрока.</summary>
-    public interface IInputable : ISubscribing
+    public interface IInputServicable : ISubscribing
     {
         /// <summary>Класс реалиазции пользовательского ввода.</summary>
         UserInput Inputs { get; set; }

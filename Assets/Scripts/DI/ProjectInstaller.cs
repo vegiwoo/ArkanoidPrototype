@@ -2,7 +2,7 @@ using Zenject;
 
 namespace Arkanoid
 {
-    public class ArkanoidInstaller : MonoInstaller
+    public class ProjectInstaller : MonoInstaller
     {
         public override void InstallBindings()
         {
@@ -10,7 +10,7 @@ namespace Arkanoid
             Container.Bind<ISettingServicable>().To<SettingService>().AsSingle().NonLazy();
 
             // InputController
-            Container.Bind<IInputable>().To<InputController>().AsSingle().NonLazy();
+            Container.Bind<IInputServicable>().To<InputService>().AsSingle().NonLazy();
 
             // SceneController
             Container.Bind<ISceneble>().To<SceneController>().FromNew().AsSingle().NonLazy();

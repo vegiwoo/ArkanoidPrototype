@@ -1,23 +1,22 @@
 using System;
-using System.Numerics;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace Arkanoid
 {
-    /// <summary>Получает ввод от игрока.</summary>
-    public class InputController : IInputable
+    /// <summary>Получает ввод от пользователя.</summary>
+    public class InputService : IInputServicable
     {
         public UserInput Inputs { get; set; }
 
         public event EventHandler<BatDirection> BatDirectionEvent;
 
-        public InputController()
+        public InputService()
         {
             Inputs = new UserInput();
             Subscribe();
         }
 
-        ~InputController()
+        ~InputService()
         {
             Unsubscribing();
         }

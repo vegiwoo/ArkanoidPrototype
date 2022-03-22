@@ -19,7 +19,7 @@ namespace Arkanoid
         private GoalComponent Goal01 { get; set; }
         private GoalComponent Goal02 { get; set; }
 
-        private IInputable Inputs { get; set; }
+        private IInputServicable Inputs { get; set; }
 
         private BatSettings BatSettings { get; set; }
 
@@ -43,7 +43,7 @@ namespace Arkanoid
         /// <summary>Псевдоконструктор для внедрения зависимостей Zenject.</summary>
         /// <param name="inputs">Источник ввода от пользователя.</param>
         [Inject]
-        public void Construct(ShaftComponent shaft, BallComponent ball, List<BatComponent> bats, List<GoalComponent> goals, IInputable inputs, BatSettings batSettings)
+        public void Construct(ShaftComponent shaft, BallComponent ball, List<BatComponent> bats, List<GoalComponent> goals, IInputServicable inputs, BatSettings batSettings)
         {
             Shaft = shaft;
             Ball = ball;
