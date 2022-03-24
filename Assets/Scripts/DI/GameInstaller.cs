@@ -6,15 +6,20 @@ namespace Arkanoid
     public class GameInstaller : MonoInstaller
     {
         [SerializeField] private GameManager gameManager;
+        [SerializeField] private PausedMenuController pausedMenu;
+ 
         public BatSettings batSettings;
 
         public override void InstallBindings()
         {
-            // Container.Bind<IInputable>().To<InputController>().AsSingle().NonLazy();
-
             // BatSettings
             batSettings.batSpeed = 50.0f;
             Container.Bind<BatSettings>().FromInstance(batSettings).AsSingle().NonLazy();
+
+            // Paused Menu
+            PausedMenuController pausedMenuController = Container.InstantiatePrefabForComponent<PausedMenuController>(pausedMenu.gameObject, pausedMenu.transform.position, pausedMenu.transform.rotation, null);
+            pausedMenuController.name = "PausedMenu";
+            Container.Bind<PausedMenuController>().FromInstance(pausedMenuController).AsSingle().NonLazy();
 
             // GameManager
             Container.Bind<GameManager>().FromInstance(gameManager).AsSingle().NonLazy();

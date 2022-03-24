@@ -43,6 +43,14 @@ namespace Arkanoid
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
                     ""interactions"": """"
+                },
+                {
+                    ""name"": ""Esc"",
+                    ""type"": ""Button"",
+                    ""id"": ""223c16c3-10a9-4e3e-ba5a-d415afee8866"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """"
                 }
             ],
             ""bindings"": [
@@ -166,6 +174,17 @@ namespace Arkanoid
                     ""action"": ""InitialRoll"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""3b4f640d-381f-4d19-8c2f-ba1119c477e6"",
+                    ""path"": ""<Keyboard>/escape"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""Esc"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -177,6 +196,7 @@ namespace Arkanoid
             m_PlayerInput_Player1Movement = m_PlayerInput.FindAction("Player1Movement", throwIfNotFound: true);
             m_PlayerInput_Player2Movement = m_PlayerInput.FindAction("Player2Movement", throwIfNotFound: true);
             m_PlayerInput_InitialRoll = m_PlayerInput.FindAction("InitialRoll", throwIfNotFound: true);
+            m_PlayerInput_Esc = m_PlayerInput.FindAction("Esc", throwIfNotFound: true);
         }
 
         public void Dispose()
@@ -229,6 +249,7 @@ namespace Arkanoid
         private readonly InputAction m_PlayerInput_Player1Movement;
         private readonly InputAction m_PlayerInput_Player2Movement;
         private readonly InputAction m_PlayerInput_InitialRoll;
+        private readonly InputAction m_PlayerInput_Esc;
         public struct PlayerInputActions
         {
             private @UserInput m_Wrapper;
@@ -236,6 +257,7 @@ namespace Arkanoid
             public InputAction @Player1Movement => m_Wrapper.m_PlayerInput_Player1Movement;
             public InputAction @Player2Movement => m_Wrapper.m_PlayerInput_Player2Movement;
             public InputAction @InitialRoll => m_Wrapper.m_PlayerInput_InitialRoll;
+            public InputAction @Esc => m_Wrapper.m_PlayerInput_Esc;
             public InputActionMap Get() { return m_Wrapper.m_PlayerInput; }
             public void Enable() { Get().Enable(); }
             public void Disable() { Get().Disable(); }
@@ -254,6 +276,9 @@ namespace Arkanoid
                     @InitialRoll.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnInitialRoll;
                     @InitialRoll.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnInitialRoll;
                     @InitialRoll.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnInitialRoll;
+                    @Esc.started -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnEsc;
+                    @Esc.performed -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnEsc;
+                    @Esc.canceled -= m_Wrapper.m_PlayerInputActionsCallbackInterface.OnEsc;
                 }
                 m_Wrapper.m_PlayerInputActionsCallbackInterface = instance;
                 if (instance != null)
@@ -267,6 +292,9 @@ namespace Arkanoid
                     @InitialRoll.started += instance.OnInitialRoll;
                     @InitialRoll.performed += instance.OnInitialRoll;
                     @InitialRoll.canceled += instance.OnInitialRoll;
+                    @Esc.started += instance.OnEsc;
+                    @Esc.performed += instance.OnEsc;
+                    @Esc.canceled += instance.OnEsc;
                 }
             }
         }
@@ -276,6 +304,7 @@ namespace Arkanoid
             void OnPlayer1Movement(InputAction.CallbackContext context);
             void OnPlayer2Movement(InputAction.CallbackContext context);
             void OnInitialRoll(InputAction.CallbackContext context);
+            void OnEsc(InputAction.CallbackContext context);
         }
     }
 }

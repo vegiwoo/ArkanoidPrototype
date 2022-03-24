@@ -15,6 +15,9 @@ namespace Arkanoid
     /// <summary>Команды кнопок MainMenu</summary>
     public enum MainMenuCommand { NewGame, Settings, Exit };
 
+    /// <summary></summary>>
+    public enum PausedMenuCommand { Restart, Settings, Resume, Exit};
+
     /// <summary>Режим сложности игры.</summary>
     public enum DifficultyGameMode { Easy = 0, Medium = 1, Hard = 2}
 

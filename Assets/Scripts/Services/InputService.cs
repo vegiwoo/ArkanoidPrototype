@@ -9,6 +9,7 @@ namespace Arkanoid
         public UserInput Inputs { get; set; }
 
         public event EventHandler<BatDirection> BatDirectionEvent;
+        public event EventHandler<bool> PauseEvent;
 
         public InputService()
         {
@@ -33,6 +34,8 @@ namespace Arkanoid
             Inputs.PlayerInput.Player2Movement.canceled += OnMovementSecondPlayer;
 
             Inputs.PlayerInput.InitialRoll.performed += OnInitialRoll;
+
+            Inputs.PlayerInput.Esc.performed += OnEscPressButtonHandler;
         }
 
         public void Unsubscribing()
@@ -46,6 +49,8 @@ namespace Arkanoid
             Inputs.PlayerInput.Player2Movement.canceled -= OnMovementSecondPlayer;
 
             Inputs.PlayerInput.InitialRoll.performed -= OnInitialRoll;
+
+            Inputs.PlayerInput.Esc.performed -= OnEscPressButtonHandler;
 
             Inputs.Disable();
             Inputs.Dispose();
@@ -85,6 +90,11 @@ namespace Arkanoid
                 : new BatDirection(side, destination);
 
             BatDirectionEvent?.Invoke(this, batDirection);
+        }
+
+        public void OnEscPressButtonHandler(CallbackContext context)
+        {
+            PauseEvent?.Invoke(this, true);
         }
     }
 }

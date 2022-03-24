@@ -6,6 +6,9 @@ namespace Arkanoid
     /// <summary>Глобальный сервис игры.</summary>
     public interface IGameServiceble
     {
+        /// <summary>Тоггл режима паузы.</summary>
+        public void TogglePaused();
+            
         /// <summary>Выход из игры.</summary>
         public void ExitGame();
     }
@@ -52,6 +55,9 @@ namespace Arkanoid
         /// <summary>Обработчик события изменения направления движения биты определенного игрока.</summary>
         event EventHandler<BatDirection> BatDirectionEvent;
 
+        /// <summary>Событие смены режима паузы.</summary>
+        public event EventHandler<bool> PauseEvent;
+
         /// <summary>Получение ввода от первого игрока.</summary>
         /// <param name="context">Контекст ввода.</param>
         void OnMovementFirstPlayer(CallbackContext context);
@@ -63,6 +69,10 @@ namespace Arkanoid
         /// <summary>Начальное отбивание шарика, когда он находится на какой-либо платформе (бите).</summary>
         /// <param name="context"></param>
         void OnInitialRoll(CallbackContext context);
+
+        /// <summary>Обработка нажатия клавиши Esc на клавиатуре.</summary>
+        /// <param name="context"></param>
+        void OnEscPressButtonHandler(CallbackContext context);
     }
 
     /// <summary>Требует определения стороны конфликта.</summary>

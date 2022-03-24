@@ -29,16 +29,6 @@ namespace Arkanoid
             difficultyTogglesList = difficultyToggles.GetComponentsInChildren<Toggle>().ToList();
         }
 
-        private void Start()
-        {
-            //OnSoundEnableToggleHandler(false);
-
-            //soundEnableToggle.isOn = currentGameSettings.IsMuteSound;
-
-            //soundVolumeSlider.enabled = true;
-            //soundVolumeSlider.value = currentGameSettings.CurrentSoundVolumeLevel;
-        }
-
         private void OnEnable()
         {
             soundEnableToggle.onValueChanged.AddListener(OnSoundEnableToggleHandler);

@@ -6,9 +6,26 @@ namespace Arkanoid
     {
         private ISettingServiceble Setting;
 
+        private bool isGamePaused = false;
+
         public GameService(ISettingServiceble settings)
         {
             Setting = settings;
+        }
+
+        public void TogglePaused()
+        {
+            isGamePaused = !isGamePaused;
+
+            switch (isGamePaused)
+            {
+                case true:
+                    Time.timeScale = 0;
+                    break;
+                case false:
+                    Time.timeScale = 1;
+                    break;
+            }
         }
 
         public void ExitGame()

@@ -6,9 +6,18 @@ using Zenject;
 
 namespace Arkanoid
 {
-    public class GameManager : MonoBehaviour, ISubscribing
+
+
+
+    public class GameManager : BaseManager, ISubscribing
     {
         #region Variables and constants
+
+        // Службы
+        private IInputServiceble Inputs { get; set; }
+
+        // Меню
+        private PausedMenuController PausedMenu { get; set; }
 
         private ShaftComponent Shaft { get; set; }
         private BallComponent Ball { get; set; }
@@ -18,8 +27,6 @@ namespace Arkanoid
 
         private GoalComponent Goal01 { get; set; }
         private GoalComponent Goal02 { get; set; }
-
-        private IInputServiceble Inputs { get; set; }
 
         private BatSettings BatSettings { get; set; }
 
@@ -40,10 +47,24 @@ namespace Arkanoid
 
         #region Dependency Injection
 
-        /// <summary>Псевдоконструктор для внедрения зависимостей Zenject.</summary>
-        /// <param name="inputs">Источник ввода от пользователя.</param>
+        /// <summary>Псевдоконструктор для внедрения зависимостей (службы).</summary>
         [Inject]
-        public void Construct(ShaftComponent shaft, BallComponent ball, List<BatComponent> bats, List<GoalComponent> goals, IInputServiceble inputs, BatSettings batSettings)
+        public void CobstuctServices(IGameServiceble game, IInputServiceble inputs)
+        {
+            GameService = game;
+            Inputs = inputs;
+        }
+
+        /// <summary>Псевдоконструктор для внедрения зависимостей (меню).</summary>
+        [Inject]
+        public void CobstuctMenues(PausedMenuController pausedMenu, GameSettingsContoller gameSettings)
+        {
+            PausedMenu = pausedMenu;
+            GameSettingsMenu = gameSettings;
+        }
+
+        [Inject]
+        public void Construct(ShaftComponent shaft, BallComponent ball, List<BatComponent> bats, List<GoalComponent> goals, BatSettings batSettings)
         {
             Shaft = shaft;
             Ball = ball;
@@ -54,8 +75,6 @@ namespace Arkanoid
             Goal01 = goals.Where(go => go.name == "Goal01").FirstOrDefault();
             Goal02 = goals.Where(go => go.name == "Goal02").FirstOrDefault();
 
-            Inputs = inputs;
-
             BatSettings = batSettings;
 
             Subscribe();
@@ -65,7 +84,7 @@ namespace Arkanoid
             Debug.Log("Начало новой игры\nВыбей все блоки и не потеряй все жизни, чтобы выиграть!");
             Debug.Log($"Текущее количество жизней: {hp}.");
 
-            CreateBlocks();
+            CreateBlocks(Shaft.transform.position);
         }
 
         #endregion
@@ -99,6 +118,8 @@ namespace Arkanoid
             }
             else
             {
+                if (ballMovingCoroutine != null) return;
+
                 isGoalScored = false;
 
                 if (Bat01.CheckIsObjectChild(Ball.transform))
@@ -177,6 +198,11 @@ namespace Arkanoid
             }
         }
 
+        private void PauseEventHandler(object _, bool toggle)
+        {
+            GameService.TogglePaused();
+        }
+
         #endregion
 
         #region Coroutines
@@ -199,6 +225,8 @@ namespace Arkanoid
         public void Subscribe()
         {
             Inputs.BatDirectionEvent += SomePlayersInputHandler;
+            Inputs.PauseEvent += PauseEventHandler;
+
             Goal01.BallInGoalEvent += BallInGoalEventHandler;
             Goal02.BallInGoalEvent += BallInGoalEventHandler;
             Ball.BlockKnockEvent += BlockKnockEventHandler;
@@ -208,6 +236,7 @@ namespace Arkanoid
         {
             if (Inputs != null)
             {
+                Inputs.PauseEvent -= PauseEventHandler;
                 Inputs.BatDirectionEvent -= SomePlayersInputHandler;
                 Goal01.BallInGoalEvent -= BallInGoalEventHandler;
                 Goal02.BallInGoalEvent -= BallInGoalEventHandler;
@@ -215,9 +244,10 @@ namespace Arkanoid
             }
         }
 
-        private void CreateBlocks()
+        /// <summary>Создает игровые блоки по заранее опереленным координатам.</summary>
+        private void CreateBlocks(Vector3 center)
         {
-            Vector3 center = Shaft.transform.position;
+            //Vector3 center = Shaft.transform.position;
 
             List<Vector3> blocksPositions = new List<Vector3>(19)
             {

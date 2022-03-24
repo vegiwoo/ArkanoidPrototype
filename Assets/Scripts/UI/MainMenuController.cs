@@ -6,6 +6,7 @@ namespace Arkanoid
 {
     public class MainMenuController : MonoBehaviour
     {
+        [SerializeField] private Text gameNameLabel;
         [SerializeField] private Button newGameButton;
         [SerializeField] private Button settingsButton;
         [SerializeField] private Button exitButton;
@@ -14,6 +15,8 @@ namespace Arkanoid
 
         private void OnEnable()
         {
+            gameNameLabel.text = "<size=18><color=#38B3EA><b>ARK</b></color><color><i>ANOID</i></color></size>";
+
             newGameButton.onClick.AddListener(OnClickNewGameButtonHandler);
             settingsButton.onClick.AddListener(OnClickSettingsButtonHandler);
             exitButton.onClick.AddListener(OnClickExitButtonHandler);

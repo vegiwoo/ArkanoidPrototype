@@ -3,14 +3,10 @@ using Zenject;
 
 namespace Arkanoid
 {
-    public class MainSceneManager : MonoBehaviour
+    public class MainSceneManager : BaseManager
     {
-        private IGameServiceble GameService { get; set; }
-        private ISettingServiceble SettingsService { get; set; }
-        private ISceneble SceneService { get; set; }
         private Canvas MainSceneCanvas { get; set; }
         private MainMenuController MainMenu { get; set; }
-        private GameSettingsContoller GameSettingsMenu { get; set; }
 
         [Inject]
         public void ConstrustServices(IGameServiceble gameService, ISceneble sceneService, ISettingServiceble settingService)
@@ -34,31 +30,16 @@ namespace Arkanoid
             SetMenuSetting(MainMenu.gameObject, true);
         }
 
-        private void OnEnable()
+        protected override void OnEnable()
         {
+            base.OnEnable();
             MainMenu.mainMenuEvent += OnMainMenuButtonClickHandler;
-            GameSettingsMenu.backEvent += OnSettingsMenuBackButtonClickHandler;
         }
 
-        private void OnDisable()
+        protected override void OnDisable()
         {
+            base.OnDisable();
             MainMenu.mainMenuEvent -= OnMainMenuButtonClickHandler;
-            GameSettingsMenu.backEvent -= OnSettingsMenuBackButtonClickHandler;
-        }
-
-        /// <summary>Настраивает RectTransform меню относительно родителя и активирует/деактивирует меню.</summary>
-        /// <param name="menuObject">GameObject для получения RectTransform.</param>
-        /// <param name="isActive">Флаг активации.</param>
-        private void SetMenuSetting(GameObject menuObject, bool isActive)
-        {
-            RectTransform rect = menuObject.transform.GetComponent<RectTransform>();
-            if (rect != null)
-            {
-                rect.localPosition = Vector3.zero;
-                rect.localScale = new Vector3(0.4f, 0.8f, 0.4f);
-            }
-
-            menuObject.SetActive(isActive);
         }
 
         private void OnMainMenuButtonClickHandler(object _, MainMenuCommand menuCommand)
@@ -82,11 +63,9 @@ namespace Arkanoid
             }
         }
 
-        private void OnSettingsMenuBackButtonClickHandler(object _, GameSettings currentSettings)
+        protected override void OnSettingsMenuBackButtonClickHandler(object sender, GameSettings currentSettings)
         {
-            SettingsService.SetGameSettings(currentSettings);
-
-            GameSettingsMenu.gameObject.SetActive(false);
+            base.OnSettingsMenuBackButtonClickHandler(sender, currentSettings);
             MainMenu.gameObject.SetActive(true);
         }
     }
