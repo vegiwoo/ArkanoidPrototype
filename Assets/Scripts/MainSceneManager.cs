@@ -28,8 +28,8 @@ namespace Arkanoid
         {
             MainSceneCanvas = canvas;
 
-            MainMenu.transform.parent = MainSceneCanvas.transform;
-            GameSettingsMenu.transform.parent = MainSceneCanvas.transform;
+            MainMenu.transform.SetParent(MainSceneCanvas.transform, false);
+            GameSettingsMenu.transform.SetParent(MainSceneCanvas.transform, false);
 
             SetMenuSetting(GameSettingsMenu.gameObject, false);
             SetMenuSetting(MainMenu.gameObject, true);
@@ -63,7 +63,6 @@ namespace Arkanoid
             {
                 case MainMenuCommand.NewGame:
                     Debug.Log("Начать новую игру");
-                    GameSettingsMenu.transform.parent = null;
                     SceneService.LoadScene(Scene.GameScene);
                     break;
                 case MainMenuCommand.Settings:

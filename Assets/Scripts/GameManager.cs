@@ -46,10 +46,12 @@ namespace Arkanoid
 
         /// <summary>Псевдоконструктор для внедрения зависимостей (службы).</summary>
         [Inject]
-        public void ConstructServices(IGameServiceble game, IInputServiceble inputs)
+        public void ConstructServices(IGameServiceble game, IInputServiceble inputs, ISettingServiceble setting, ISceneble sceneService)
         {
             GameService = game;
             Inputs = inputs;
+            SettingsService = setting;
+            SceneService = sceneService;
         }
 
         /// <summary>Псевдоконструктор для внедрения зависимостей (меню).</summary>
@@ -227,8 +229,8 @@ namespace Arkanoid
             Goal02.BallInGoalEvent += BallInGoalEventHandler;
             Ball.BlockKnockEvent += BlockKnockEventHandler;
 
-            GameSettingsMenu.backEvent += OnSettingsMenuBackButtonClickHandler;
             PausedMenu.PauseMenuEvent += OnPauseMenuEvent;
+            GameSettingsMenu.backEvent += OnSettingsMenuBackButtonClickHandler;
         }
 
         public void Unsubscribing()
@@ -242,17 +244,14 @@ namespace Arkanoid
                 Goal02.BallInGoalEvent -= BallInGoalEventHandler;
                 Ball.BlockKnockEvent -= BlockKnockEventHandler;
 
-                GameSettingsMenu.backEvent -= OnSettingsMenuBackButtonClickHandler;
                 PausedMenu.PauseMenuEvent -= OnPauseMenuEvent;
-
+                GameSettingsMenu.backEvent -= OnSettingsMenuBackButtonClickHandler;
             }
         }
 
         /// <summary>Создает игровые блоки по заранее опереленным координатам.</summary>
         private void CreateBlocks(Vector3 center)
         {
-            //Vector3 center = Shaft.transform.position;
-
             List<Vector3> blocksPositions = new List<Vector3>(19)
             {
                 center,
@@ -299,17 +298,28 @@ namespace Arkanoid
             GameObject canvasBat01Object = Bat01.gameObject.transform.Find("Canvas").gameObject;
             Canvas canvas = canvasBat01Object.GetComponent<Canvas>();
 
-            PausedMenu.transform.parent = canvas.transform;
-            GameSettingsMenu.transform.parent = canvas.transform;
+            PausedMenu.transform.SetParent(canvas.transform, false);
+            GameSettingsMenu.transform.SetParent(canvas.transform, false);
 
             SetMenuSetting(PausedMenu.gameObject, false);
             SetMenuSetting(GameSettingsMenu.gameObject, false);
+
+            Debug.Log(GameSettingsMenu.name);
+            Debug.Log(canvas.name);
         }
 
         private void PauseEventHandler(object _, bool toggle)
         {
             bool currentPaused = GameService.TogglePaused();
-            PausedMenu.gameObject.SetActive(currentPaused ? true : false);
+
+            if (currentPaused)
+            {
+                PausedMenu.gameObject.SetActive(true);
+            }
+            else
+            {
+                PausedMenu.gameObject.SetActive(false);
+            }
         }
 
         private void OnPauseMenuEvent(object _, PausedMenuCommand command)
@@ -318,24 +328,30 @@ namespace Arkanoid
             {
                 case PausedMenuCommand.Restart:
                     Debug.Log("Перезапуск игры");
-                    // ...
+                    PauseEventHandler(this, true);
+                    SceneService.LoadScene(Scene.GameScene);
                     break;
                 case PausedMenuCommand.Settings:
                     Debug.Log("Переход в меню настроек");
                     PausedMenu.gameObject.SetActive(false);
-                    // Получить актуальные настройки и отдать на меню
                     GameSettingsMenu.UpdateSettings(SettingsService.GetGameSettings());
                     GameSettingsMenu.gameObject.SetActive(true);
                     break;
                 case PausedMenuCommand.Resume:
                     Debug.Log("Продолжить игру");
-                    // ...
+                    PauseEventHandler(this, true);
                     break;
                 case PausedMenuCommand.Exit:
                     Debug.Log("Выйти из игры");
                     GameService.ExitGame();
                     break;
             }
+        }
+
+        protected override void OnSettingsMenuBackButtonClickHandler(object sender, GameSettings currentSettings)
+        {
+            base.OnSettingsMenuBackButtonClickHandler(sender, currentSettings);
+            PausedMenu.gameObject.SetActive(true);
         }
 
         #endregion

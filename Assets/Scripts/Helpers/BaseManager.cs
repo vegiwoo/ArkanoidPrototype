@@ -44,6 +44,7 @@ namespace Arkanoid
         protected virtual void OnSettingsMenuBackButtonClickHandler(object _, GameSettings currentSettings)
         {
             SettingsService.SetGameSettings(currentSettings);
+            GameSettingsMenu.gameObject.SetActive(false);
         }
 
         #endregion
