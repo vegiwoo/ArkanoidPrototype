@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Arkanoid
 {
@@ -10,6 +11,9 @@ namespace Arkanoid
         /// <summary>Твердое тело биты.</summary>
         public Rigidbody Rigidbody { get; private set; }
         public SideOfConflict Side { get; set; }
+
+        public Canvas canvas;
+        public Text scoreLabel;
 
         private void Awake()
         {
@@ -81,8 +85,6 @@ namespace Arkanoid
                         child.transform.Translate(0.0f, 0.0f, 1.5f);
                         break;
                 }
-
-               
             }
         }
     }

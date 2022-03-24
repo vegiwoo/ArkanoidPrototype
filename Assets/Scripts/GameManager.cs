@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 using Zenject;
 
 namespace Arkanoid
@@ -39,6 +40,8 @@ namespace Arkanoid
         List<GameObject> blocks = new List<GameObject>(19);
 
         private int brokenBlockCounter = 0;
+
+        private List<Text> scoreLabels = new List<Text>(0);
 
         #endregion
 
@@ -81,11 +84,18 @@ namespace Arkanoid
             Bat01.SetComponentAsParent(true, Ball.transform);
 
             Debug.Log("Начало новой игры\nВыбей все блоки и не потеряй все жизни, чтобы выиграть!");
-            Debug.Log($"Текущее количество жизней: {hp}.");
 
             CreateBlocks(Shaft.transform.position);
 
             AddMenuToCanvasBat01();
+
+            scoreLabels.Add(Bat01.scoreLabel);
+            scoreLabels.Add(Bat02.scoreLabel);
+
+            foreach (var label in scoreLabels)
+            {
+                label.text = hp.ToString();
+            }
         }
 
         #endregion
@@ -146,13 +156,17 @@ namespace Arkanoid
             isGoalScored = true;
             hp -= 1;
 
+            foreach (var label in scoreLabels)
+            {
+                label.text = hp.ToString();
+            }
+
             Debug.Log($"Текущее количество жизней: {hp}.");
 
             if (hp == 0)
             {
                 UnityEditor.EditorApplication.isPaused = true;
-                Debug.Log($"Game over. Вы проигирали :(");
-
+                Debug.Log($"Game over. Вы проиграли :(");
             }
             else
             {
@@ -295,17 +309,11 @@ namespace Arkanoid
 
         public void AddMenuToCanvasBat01()
         {
-            GameObject canvasBat01Object = Bat01.gameObject.transform.Find("Canvas").gameObject;
-            Canvas canvas = canvasBat01Object.GetComponent<Canvas>();
-
-            PausedMenu.transform.SetParent(canvas.transform, false);
-            GameSettingsMenu.transform.SetParent(canvas.transform, false);
+            PausedMenu.transform.SetParent(Bat01.canvas.transform, false);
+            GameSettingsMenu.transform.SetParent(Bat01.canvas.transform, false);
 
             SetMenuSetting(PausedMenu.gameObject, false);
             SetMenuSetting(GameSettingsMenu.gameObject, false);
-
-            Debug.Log(GameSettingsMenu.name);
-            Debug.Log(canvas.name);
         }
 
         private void PauseEventHandler(object _, bool toggle)
