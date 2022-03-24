@@ -13,19 +13,11 @@ namespace Arkanoid
             Setting = settings;
         }
 
-        public void TogglePaused()
+        public bool TogglePaused()
         {
             isGamePaused = !isGamePaused;
-
-            switch (isGamePaused)
-            {
-                case true:
-                    Time.timeScale = 0;
-                    break;
-                case false:
-                    Time.timeScale = 1;
-                    break;
-            }
+            Time.timeScale = isGamePaused ? 0 : 1;
+            return isGamePaused;
         }
 
         public void ExitGame()

@@ -18,16 +18,7 @@ namespace Arkanoid
         #endregion
 
         #region MonoBehaviour methods
-
-        protected virtual void OnEnable()
-        {
-            GameSettingsMenu.backEvent += OnSettingsMenuBackButtonClickHandler;
-        }
-
-        protected virtual void OnDisable()
-        {
-            GameSettingsMenu.backEvent -= OnSettingsMenuBackButtonClickHandler;
-        }
+        // ...
         #endregion
 
         #region Methods
@@ -53,7 +44,6 @@ namespace Arkanoid
         protected virtual void OnSettingsMenuBackButtonClickHandler(object _, GameSettings currentSettings)
         {
             SettingsService.SetGameSettings(currentSettings);
-            GameSettingsMenu.gameObject.SetActive(false);
         }
 
         #endregion

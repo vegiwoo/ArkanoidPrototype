@@ -1869,6 +1869,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -918135277730591067, guid: 51dbea06fe58249fea4290e3a8627ef3, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 969986596420470840, guid: 51dbea06fe58249fea4290e3a8627ef3, type: 3}
       propertyPath: m_Name
       value: SettingsMenu
@@ -1989,7 +1993,8 @@ PrefabInstance:
       propertyPath: m_Text
       value: "\u041D\u0410\u0417\u0410\u0414"
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: -918135277730591067, guid: 51dbea06fe58249fea4290e3a8627ef3, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 51dbea06fe58249fea4290e3a8627ef3, type: 3}
 --- !u!114 &3113177671537440486 stripped
 MonoBehaviour:

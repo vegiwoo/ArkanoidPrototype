@@ -6,9 +6,6 @@ using Zenject;
 
 namespace Arkanoid
 {
-
-
-
     public class GameManager : BaseManager, ISubscribing
     {
         #region Variables and constants
@@ -49,7 +46,7 @@ namespace Arkanoid
 
         /// <summary>Псевдоконструктор для внедрения зависимостей (службы).</summary>
         [Inject]
-        public void CobstuctServices(IGameServiceble game, IInputServiceble inputs)
+        public void ConstructServices(IGameServiceble game, IInputServiceble inputs)
         {
             GameService = game;
             Inputs = inputs;
@@ -57,7 +54,7 @@ namespace Arkanoid
 
         /// <summary>Псевдоконструктор для внедрения зависимостей (меню).</summary>
         [Inject]
-        public void CobstuctMenues(PausedMenuController pausedMenu, GameSettingsContoller gameSettings)
+        public void ConstructMenues(PausedMenuController pausedMenu, GameSettingsContoller gameSettings)
         {
             PausedMenu = pausedMenu;
             GameSettingsMenu = gameSettings;
@@ -85,16 +82,18 @@ namespace Arkanoid
             Debug.Log($"Текущее количество жизней: {hp}.");
 
             CreateBlocks(Shaft.transform.position);
+
+            AddMenuToCanvasBat01();
         }
 
         #endregion
 
         #region MonoBehaviour methods
-
         private void OnDisable()
         {
             Unsubscribing();
         }
+
         #endregion
 
         #region Event handlers
@@ -198,10 +197,7 @@ namespace Arkanoid
             }
         }
 
-        private void PauseEventHandler(object _, bool toggle)
-        {
-            GameService.TogglePaused();
-        }
+
 
         #endregion
 
@@ -224,12 +220,15 @@ namespace Arkanoid
 
         public void Subscribe()
         {
-            Inputs.BatDirectionEvent += SomePlayersInputHandler;
             Inputs.PauseEvent += PauseEventHandler;
 
+            Inputs.BatDirectionEvent += SomePlayersInputHandler;
             Goal01.BallInGoalEvent += BallInGoalEventHandler;
             Goal02.BallInGoalEvent += BallInGoalEventHandler;
             Ball.BlockKnockEvent += BlockKnockEventHandler;
+
+            GameSettingsMenu.backEvent += OnSettingsMenuBackButtonClickHandler;
+            PausedMenu.PauseMenuEvent += OnPauseMenuEvent;
         }
 
         public void Unsubscribing()
@@ -237,10 +236,15 @@ namespace Arkanoid
             if (Inputs != null)
             {
                 Inputs.PauseEvent -= PauseEventHandler;
+
                 Inputs.BatDirectionEvent -= SomePlayersInputHandler;
                 Goal01.BallInGoalEvent -= BallInGoalEventHandler;
                 Goal02.BallInGoalEvent -= BallInGoalEventHandler;
                 Ball.BlockKnockEvent -= BlockKnockEventHandler;
+
+                GameSettingsMenu.backEvent -= OnSettingsMenuBackButtonClickHandler;
+                PausedMenu.PauseMenuEvent -= OnPauseMenuEvent;
+
             }
         }
 
@@ -287,6 +291,50 @@ namespace Arkanoid
                 rigidbody.isKinematic = true;
 
                 blocks.Add(gameObject);
+            }
+        }
+
+        public void AddMenuToCanvasBat01()
+        {
+            GameObject canvasBat01Object = Bat01.gameObject.transform.Find("Canvas").gameObject;
+            Canvas canvas = canvasBat01Object.GetComponent<Canvas>();
+
+            PausedMenu.transform.parent = canvas.transform;
+            GameSettingsMenu.transform.parent = canvas.transform;
+
+            SetMenuSetting(PausedMenu.gameObject, false);
+            SetMenuSetting(GameSettingsMenu.gameObject, false);
+        }
+
+        private void PauseEventHandler(object _, bool toggle)
+        {
+            bool currentPaused = GameService.TogglePaused();
+            PausedMenu.gameObject.SetActive(currentPaused ? true : false);
+        }
+
+        private void OnPauseMenuEvent(object _, PausedMenuCommand command)
+        {
+            switch (command)
+            {
+                case PausedMenuCommand.Restart:
+                    Debug.Log("Перезапуск игры");
+                    // ...
+                    break;
+                case PausedMenuCommand.Settings:
+                    Debug.Log("Переход в меню настроек");
+                    PausedMenu.gameObject.SetActive(false);
+                    // Получить актуальные настройки и отдать на меню
+                    GameSettingsMenu.UpdateSettings(SettingsService.GetGameSettings());
+                    GameSettingsMenu.gameObject.SetActive(true);
+                    break;
+                case PausedMenuCommand.Resume:
+                    Debug.Log("Продолжить игру");
+                    // ...
+                    break;
+                case PausedMenuCommand.Exit:
+                    Debug.Log("Выйти из игры");
+                    GameService.ExitGame();
+                    break;
             }
         }
 

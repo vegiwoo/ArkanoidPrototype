@@ -7,7 +7,8 @@ namespace Arkanoid
     public interface IGameServiceble
     {
         /// <summary>Тоггл режима паузы.</summary>
-        public void TogglePaused();
+        /// <returns>Возвращает текущее состояние паузы игры.</returns>
+        public bool TogglePaused();
             
         /// <summary>Выход из игры.</summary>
         public void ExitGame();

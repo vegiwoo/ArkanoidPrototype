@@ -213,7 +213,7 @@ MonoBehaviour:
   mainSceneManager: {fileID: 183812415}
   canvas: {fileID: 2729837943090864769, guid: 4b7e5c5c02a224c61b6c4fc63702ae7a, type: 3}
   mainMenu: {fileID: -918135277730591067, guid: 51dbea06fe58249fea4290e3a8627ef3, type: 3}
-  settingsMenu: {fileID: 2143502340802713350, guid: dcd618f549107457089da7cbd0d2f061, type: 3}
+  gameSettingsMenu: {fileID: 2143502340802713350, guid: dcd618f549107457089da7cbd0d2f061, type: 3}
 --- !u!114 &313567293
 MonoBehaviour:
   m_ObjectHideFlags: 0

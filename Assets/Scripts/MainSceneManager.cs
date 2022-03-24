@@ -7,7 +7,7 @@ namespace Arkanoid
     {
         private Canvas MainSceneCanvas { get; set; }
         private MainMenuController MainMenu { get; set; }
-
+        
         [Inject]
         public void ConstrustServices(IGameServiceble gameService, ISceneble sceneService, ISettingServiceble settingService)
         {
@@ -17,11 +17,16 @@ namespace Arkanoid
         }
 
         [Inject]
-        public void ConstructObjects(Canvas canvas, MainMenuController mainMenu, GameSettingsContoller gameSettingsContoller)
+        public void ConstructMenus(MainMenuController mainMenu, GameSettingsContoller gameMenu)
+        {
+            MainMenu = mainMenu;
+            GameSettingsMenu = gameMenu;
+        }
+
+        [Inject]
+        public void ConstructObjects(Canvas canvas)
         {
             MainSceneCanvas = canvas;
-            MainMenu = mainMenu;
-            GameSettingsMenu = gameSettingsContoller;
 
             MainMenu.transform.parent = MainSceneCanvas.transform;
             GameSettingsMenu.transform.parent = MainSceneCanvas.transform;
@@ -30,16 +35,26 @@ namespace Arkanoid
             SetMenuSetting(MainMenu.gameObject, true);
         }
 
-        protected override void OnEnable()
+        private void OnEnable()
         {
-            base.OnEnable();
-            MainMenu.mainMenuEvent += OnMainMenuButtonClickHandler;
+            Subscribe();
         }
 
-        protected override void OnDisable()
+        private void OnDisable()
         {
-            base.OnDisable();
+            Unsubscribing();
+        }
+
+        public void Subscribe()
+        {
+            MainMenu.mainMenuEvent += OnMainMenuButtonClickHandler;
+            GameSettingsMenu.backEvent += OnSettingsMenuBackButtonClickHandler;
+        }
+
+        public void Unsubscribing()
+        { 
             MainMenu.mainMenuEvent -= OnMainMenuButtonClickHandler;
+            GameSettingsMenu.backEvent -= OnSettingsMenuBackButtonClickHandler;
         }
 
         private void OnMainMenuButtonClickHandler(object _, MainMenuCommand menuCommand)
@@ -48,6 +63,7 @@ namespace Arkanoid
             {
                 case MainMenuCommand.NewGame:
                     Debug.Log("Начать новую игру");
+                    GameSettingsMenu.transform.parent = null;
                     SceneService.LoadScene(Scene.GameScene);
                     break;
                 case MainMenuCommand.Settings:

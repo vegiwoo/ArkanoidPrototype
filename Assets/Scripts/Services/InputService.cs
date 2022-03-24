@@ -1,4 +1,5 @@
 using System;
+using UnityEngine.InputSystem;
 using static UnityEngine.InputSystem.InputAction;
 
 namespace Arkanoid
@@ -35,7 +36,7 @@ namespace Arkanoid
 
             Inputs.PlayerInput.InitialRoll.performed += OnInitialRoll;
 
-            Inputs.PlayerInput.Esc.performed += OnEscPressButtonHandler;
+            Inputs.PlayerInput.Esc.started += OnEscPressButtonHandler;
         }
 
         public void Unsubscribing()
@@ -50,7 +51,7 @@ namespace Arkanoid
 
             Inputs.PlayerInput.InitialRoll.performed -= OnInitialRoll;
 
-            Inputs.PlayerInput.Esc.performed -= OnEscPressButtonHandler;
+            Inputs.PlayerInput.Esc.started -= OnEscPressButtonHandler;
 
             Inputs.Disable();
             Inputs.Dispose();

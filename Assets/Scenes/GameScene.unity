@@ -334,6 +334,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 95312585}
   pausedMenu: {fileID: 3452172807081576374, guid: d8a8c2e224b2546b6b6db3097906d5bb, type: 3}
+  gameSettingsMenu: {fileID: 2143502340802713350, guid: dcd618f549107457089da7cbd0d2f061, type: 3}
   batSettings:
     batSpeed: 0
 --- !u!114 &1274219124
